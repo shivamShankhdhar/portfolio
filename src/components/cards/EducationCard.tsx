@@ -86,12 +86,12 @@ export default function EducationCard({
     </p>
 
     {/* Year */}
-    <div className="flex items-center gap-2 text-xs text-slate-400 mt-1">
+    {/* <div className="flex items-center gap-2 text-xs text-slate-400 mt-1">
       <FiCalendar />
       <span>
         {startYear} - {endYear}
       </span>
-    </div>
+    </div> */}
 
     {/* Description */}
     {education.description && (
