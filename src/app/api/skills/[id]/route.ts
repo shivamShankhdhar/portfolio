@@ -2,15 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import { Skill } from '@/models/Skill';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+// ✅ GET
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectDB();
-    const skill = await Skill.findById(params.id);
-    
+
+    const { id } = await context.params;
+
+    const skill = await Skill.findById(id);
+
     if (!skill) {
       return NextResponse.json({ error: 'Skill not found' }, { status: 404 });
     }
-    
+
     return NextResponse.json(skill);
   } catch (error) {
     console.error('Error fetching skill:', error);
@@ -18,17 +25,23 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+// ✅ PUT
+export async function PUT(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectDB();
+
+    const { id } = await context.params;
     const data = await request.json();
-    
-    const skill = await Skill.findByIdAndUpdate(params.id, data, { new: true });
-    
+
+    const skill = await Skill.findByIdAndUpdate(id, data, { new: true });
+
     if (!skill) {
       return NextResponse.json({ error: 'Skill not found' }, { status: 404 });
     }
-    
+
     return NextResponse.json(skill);
   } catch (error) {
     console.error('Error updating skill:', error);
@@ -36,15 +49,22 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+// ✅ DELETE
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectDB();
-    const skill = await Skill.findByIdAndDelete(params.id);
-    
+
+    const { id } = await context.params;
+
+    const skill = await Skill.findByIdAndDelete(id);
+
     if (!skill) {
       return NextResponse.json({ error: 'Skill not found' }, { status: 404 });
     }
-    
+
     return NextResponse.json({ message: 'Skill deleted' });
   } catch (error) {
     console.error('Error deleting skill:', error);

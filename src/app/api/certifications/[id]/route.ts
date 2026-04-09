@@ -2,15 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import { Certification } from '@/models/Certification';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+// ✅ GET
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectDB();
-    const certification = await Certification.findById(params.id);
-    
+
+    const { id } = await context.params;
+
+    const certification = await Certification.findById(id);
+
     if (!certification) {
       return NextResponse.json({ error: 'Certification not found' }, { status: 404 });
     }
-    
+
     return NextResponse.json(certification);
   } catch (error) {
     console.error('Error fetching certification:', error);
@@ -18,17 +25,23 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+// ✅ PUT
+export async function PUT(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectDB();
+
+    const { id } = await context.params;
     const data = await request.json();
-    
-    const certification = await Certification.findByIdAndUpdate(params.id, data, { new: true });
-    
+
+    const certification = await Certification.findByIdAndUpdate(id, data, { new: true });
+
     if (!certification) {
       return NextResponse.json({ error: 'Certification not found' }, { status: 404 });
     }
-    
+
     return NextResponse.json(certification);
   } catch (error) {
     console.error('Error updating certification:', error);
@@ -36,15 +49,22 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+// ✅ DELETE
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectDB();
-    const certification = await Certification.findByIdAndDelete(params.id);
-    
+
+    const { id } = await context.params;
+
+    const certification = await Certification.findByIdAndDelete(id);
+
     if (!certification) {
       return NextResponse.json({ error: 'Certification not found' }, { status: 404 });
     }
-    
+
     return NextResponse.json({ message: 'Certification deleted' });
   } catch (error) {
     console.error('Error deleting certification:', error);

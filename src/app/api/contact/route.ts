@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
 
     if (!emailResult.success) {
       return NextResponse.json(
-        { error: emailResult.error || 'Failed to send emails' },
+        { error:  'Failed to send emails' },
         { status: 500 }
       );
     }
