@@ -35,6 +35,11 @@ const projectSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    projectType: {
+      type: String,
+      enum: ['Web', 'Mobile', 'Backend'],
+      default: 'Web',
+    },
   },
   { timestamps: true }
 );

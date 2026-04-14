@@ -24,6 +24,7 @@ export default function SidebarLayout({
 
   const { theme, toggleTheme } = useTheme();
   const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   const navItems = [
     { id: 'projects', icon: FiCode, label: 'Projects', show: hasProjects },
@@ -32,6 +33,11 @@ export default function SidebarLayout({
     { id: 'skills', icon: FiStar, label: 'Skills', show: hasSkills },
     { id: 'certifications', icon: FiAward, label: 'Certifications', show: hasCertifications },
   ].filter(item => item.show);
+
+  // ✅ Hydration fix - ensure consistency between server and client
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   // ✅ Smooth scroll handler
   const handleScrollToSection = (id: string) => {
@@ -85,8 +91,9 @@ export default function SidebarLayout({
 
   return (
     <>
-      {/* 🔥 Floating Navbar */}
-      <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-40 flex flex-row gap-2 bg-gradient-to-b from-rose-500 to-rose-600 rounded-2xl p-1.5 shadow-lg">
+      {/* 🔥 Floating Navbar - Only render after hydration */}
+      {isHydrated && (
+      <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 flex flex-row gap-2 bg-gradient-to-b from-rose-500 to-rose-600 rounded-2xl p-1.5 shadow-lg">
         
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -137,6 +144,7 @@ export default function SidebarLayout({
           </div>
         </button> */}
       </nav>
+      )}
 
       {/* ✅ IMPORTANT: Add scroll margin to ALL sections */}
       <main className="space-y-0 scroll-smooth">

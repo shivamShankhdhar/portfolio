@@ -85,7 +85,7 @@ export default function Home() {
      <HeroSection profile={profile} adminEmail={adminEmail} />
 
       {/* Projects Section */}
-     <ProjectsSection/>
+     <ProjectsSection projects={projects} />
 
       {/* Experience Section */}
      <ExperienceSection experience={experience} />
@@ -362,7 +362,7 @@ export default function Home() {
       )}
 
       {/* Footer with Social Links and Email */}
-      <footer className="border-t border-slate-200 dark:border-slate-800 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900/50 dark:to-slate-950 px-6 py-5 sm:px-8 sm:py-16">
+      <footer className="border-t border-slate-200 dark:border-slate-800 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900/50 dark:to-slate-950 px-6 py-5 sm:px-8 sm:py-16 pb-20">
         <div className="mx-auto max-w-6xl">
           <div className="flex flex-col items-center justify-center gap-8">
             {/* Social Links */}

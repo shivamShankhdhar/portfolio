@@ -18,6 +18,7 @@ export default function ProjectForm({ onSubmit, initialData }: ProjectFormProps)
     startDate: '',
     endDate: '',
     featured: false,
+    projectType: 'Web',
   });
 
   useEffect(() => {
@@ -32,6 +33,7 @@ export default function ProjectForm({ onSubmit, initialData }: ProjectFormProps)
         startDate: initialData.startDate?.split('T')[0] || '',
         endDate: initialData.endDate?.split('T')[0] || '',
         featured: initialData.featured || false,
+        projectType: initialData.projectType || 'Web',
       });
     }
   }, [initialData]);
@@ -71,6 +73,22 @@ export default function ProjectForm({ onSubmit, initialData }: ProjectFormProps)
         </div>
 
         <div>
+          <label className="block text-sm font-semibold text-slate-700">Project Type</label>
+          <select
+            name="projectType"
+            value={formData.projectType}
+            onChange={handleChange}
+            className="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2 text-slate-900 focus:border-blue-500 focus:outline-none"
+          >
+            <option value="Web">Web Application</option>
+            <option value="Mobile">Mobile Application</option>
+            <option value="Backend">Backend/Server</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <div>
           <label className="block text-sm font-semibold text-slate-700">Start Date</label>
           <input
             type="date"
@@ -81,9 +99,7 @@ export default function ProjectForm({ onSubmit, initialData }: ProjectFormProps)
             className="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2 text-slate-900 focus:border-blue-500 focus:outline-none"
           />
         </div>
-      </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
         <div>
           <label className="block text-sm font-semibold text-slate-700">End Date</label>
           <input
@@ -94,7 +110,9 @@ export default function ProjectForm({ onSubmit, initialData }: ProjectFormProps)
             className="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2 text-slate-900 focus:border-blue-500 focus:outline-none"
           />
         </div>
+      </div>
 
+      <div className="grid gap-6 md:grid-cols-2">
         <div>
           <label className="block text-sm font-semibold text-slate-700">Image URL</label>
           <input
