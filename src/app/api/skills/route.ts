@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB();
     const data = await request.json();
+    console.log('Received skill data:', data); // Debug log
 
     // Validate that name is provided
     if (!data.name || !data.name.trim()) {
@@ -61,9 +62,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const capitalizedName = data.name.trim().charAt(0).toUpperCase() + data.name.trim().slice(1);
+
     const skill = new Skill({
       ...data,
-      name: data.name.trim(),
+      name: capitalizedName,
+      icon: data.icon || undefined,
+      image: data.image || undefined,
+      description: data.description || undefined,
     });
     await skill.save();
 

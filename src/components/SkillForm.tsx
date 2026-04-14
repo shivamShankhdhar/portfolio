@@ -5,9 +5,10 @@ import React, { useState, useEffect } from 'react';
 interface Skill {
   _id?: string;
   name: string;
-  category: 'Frontend' | 'Backend' | 'Database' | 'DevOps' | 'Tools' | 'Other';
+  category: 'Frontend' | 'Backend' | 'Database' | 'DevOps' | 'Tools' | 'Programming Language' | 'Other';
   proficiency: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
   icon?: string;
+  image?: string;
   description?: string;
 }
 
@@ -23,12 +24,39 @@ export default function SkillForm({ skill, onSave, onCancel }: SkillFormProps) {
       name: '',
       category: 'Frontend',
       proficiency: 'Intermediate',
+      icon: '',
+      image: '',
+      description: '',
     }
   );
   const [loading, setLoading] = useState(false);
 
+  // Update form when editing a different skill
+  useEffect(() => {
+    if (skill) {
+      setFormData({
+        name: skill.name || '',
+        category: skill.category || 'Frontend',
+        proficiency: skill.proficiency || 'Intermediate',
+        icon: skill.icon || '',
+        image: skill.image || '',
+        description: skill.description || '',
+      });
+    } else {
+      setFormData({
+        name: '',
+        category: 'Frontend',
+        proficiency: 'Intermediate',
+        icon: '',
+        image: '',
+        description: '',
+      });
+    }
+  }, [skill]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    console.log(`Changing ${name} to:`, value); // Debug log
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -39,11 +67,16 @@ export default function SkillForm({ skill, onSave, onCancel }: SkillFormProps) {
     e.preventDefault();
     setLoading(true);
     try {
-      await onSave(formData);
+      const capitalizedName = formData.name.charAt(0).toUpperCase() + formData.name.slice(1);
+      console.log('Submitting form data:', { ...formData, name: capitalizedName }); // Debug log
+      await onSave({ ...formData, name: capitalizedName });
       setFormData({
         name: '',
         category: 'Frontend',
         proficiency: 'Intermediate',
+        icon: '',
+        image: '',
+        description: '',
       });
     } finally {
       setLoading(false);
@@ -79,6 +112,7 @@ export default function SkillForm({ skill, onSave, onCancel }: SkillFormProps) {
             <option value="Database">Database</option>
             <option value="DevOps">DevOps</option>
             <option value="Tools">Tools</option>
+            <option value="Programming Language">Programming Language</option>
             <option value="Other">Other</option>
           </select>
         </div>
@@ -100,7 +134,20 @@ export default function SkillForm({ skill, onSave, onCancel }: SkillFormProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Icon (optional)</label>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Skill Image URL</label>
+        <input
+          type="text"
+          name="image"
+          value={formData.image || ''}
+          onChange={handleChange}
+          className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+          placeholder="https://cdn.example.com/react.png"
+        />
+        <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">Get logos from: <a href="https://devicon.dev" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:text-orange-600 underline">devicon.dev</a>, <a href="https://simpleicons.org" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:text-orange-600 underline">simpleicons.org</a></p>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Icon Emoji (fallback if no image)</label>
         <input
           type="text"
           name="icon"

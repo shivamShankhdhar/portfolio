@@ -35,8 +35,17 @@ export async function PUT(
 
     const { id } = await context.params;
     const data = await request.json();
+    console.log('Updating skill data:', data); // Debug log
 
-    const skill = await Skill.findByIdAndUpdate(id, data, { new: true });
+    const capitalizedName = data.name?.trim() ? data.name.trim().charAt(0).toUpperCase() + data.name.trim().slice(1) : data.name;
+
+    const skill = await Skill.findByIdAndUpdate(id, {
+      ...data,
+      name: capitalizedName,
+      icon: data.icon || undefined,
+      image: data.image || undefined,
+      description: data.description || undefined,
+    }, { new: true });
 
     if (!skill) {
       return NextResponse.json({ error: 'Skill not found' }, { status: 404 });

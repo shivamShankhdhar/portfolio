@@ -9,6 +9,7 @@ interface Skill {
   category: string;
   proficiency: string;
   icon?: string;
+  image?: string;
   description?: string;
 }
 
@@ -28,6 +29,13 @@ const proficiencyColors = {
 
 export default function SkillCard({ skill, onEdit, onDelete, isAdmin = false }: SkillCardProps) {
   const { ref, isVisible } = useScrollAnimation();
+  const [imageLoaded, setImageLoaded] = React.useState(true);
+
+  // Capitalize first letter helper
+  const capitalizeFirstLetter = (str: string) => {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
 
   const proficiencyWidth = {
     Expert: 'w-full',
@@ -43,6 +51,10 @@ export default function SkillCard({ skill, onEdit, onDelete, isAdmin = false }: 
     Beginner: 'from-blue-500 to-blue-600',
   };
 
+  const handleImageError = () => {
+    setImageLoaded(false);
+  };
+
   return (
     <div
       ref={ref}
@@ -55,22 +67,34 @@ export default function SkillCard({ skill, onEdit, onDelete, isAdmin = false }: 
       {/* Background gradient blob */}
       <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-orange-400/20 to-transparent rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500"></div>
       
-      <div className="relative space-y-4">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3">
-              {skill.icon && (
-                <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-gradient-to-br from-orange-400/20 to-orange-500/20 text-xl">
-                  {skill.icon}
-                </div>
-              )}
-              <h3 className="text-lg font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-                {skill.name}
-              </h3>
+      {/* Content wrapper */}
+      <div className="relative z-10 space-y-4">
+        {/* Logo and Name */}
+        <div className="flex items-center gap-3">
+          {skill.image && imageLoaded ? (
+            <img
+              src={skill.image}
+              alt={capitalizeFirstLetter(skill.name)}
+              className="flex-shrink-0 h-14 w-14 object-contain rounded-lg group-hover:scale-110 transition-transform duration-300 p-2 bg-white dark:bg-slate-800/50"
+              onError={handleImageError}
+              crossOrigin="anonymous"
+              loading="lazy"
+            />
+          ) : skill.icon ? (
+            <div className="flex-shrink-0 h-14 w-14 flex items-center justify-center rounded-lg bg-gradient-to-br from-orange-400/20 to-orange-500/20 text-2xl group-hover:scale-110 transition-transform duration-300">
+              {skill.icon}
             </div>
-          </div>
+          ) : (
+            <div className="flex-shrink-0 h-14 w-14 flex items-center justify-center rounded-lg bg-gradient-to-br from-slate-300 to-slate-400 dark:from-slate-600 dark:to-slate-700 text-2xl group-hover:scale-110 transition-transform duration-300">
+              ⚙️
+            </div>
+          )}
+          <h3 className="text-lg font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
+            {capitalizeFirstLetter(skill.name)}
+          </h3>
         </div>
 
+        {/* Category and Proficiency */}
         <div className="flex flex-wrap gap-2">
           <span className="inline-block rounded-full bg-gradient-to-r from-slate-200/60 to-slate-100/60 dark:from-slate-700/60 dark:to-slate-800/60 backdrop-blur px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-300">
             {skill.category}
@@ -101,8 +125,9 @@ export default function SkillCard({ skill, onEdit, onDelete, isAdmin = false }: 
           </div>
         </div>
 
+        {/* Admin Actions */}
         {isAdmin && (
-          <div className="mt-4 flex gap-2 border-t border-white/20 dark:border-white/10 pt-4 relative z-10">
+          <div className="flex gap-2 border-t border-white/20 dark:border-white/10 pt-4">
             <button
               onClick={() => onEdit?.(skill)}
               className="flex-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-3 py-2 text-sm font-semibold text-white transition-all duration-300 hover:shadow-lg hover:scale-105"
@@ -121,3 +146,4 @@ export default function SkillCard({ skill, onEdit, onDelete, isAdmin = false }: 
     </div>
   );
 }
+  

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { toast, Toaster } from 'sonner';
 import ProfileForm from '@/components/admin/forms/ProfileForm';
 import ProjectForm from '@/components/admin/forms/ProjectForm';
 import EducationForm from '@/components/admin/forms/EducationForm';
@@ -58,6 +59,7 @@ interface Skill {
   category: string;
   proficiency: string;
   icon?: string;
+  image?: string;
   description?: string;
 }
 
@@ -84,7 +86,6 @@ export default function AdminDashboard() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingData, setEditingData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
   const [adminEmail, setAdminEmail] = useState<string>('');
   const [adminToken, setAdminToken] = useState<string>('');
 
@@ -126,8 +127,11 @@ export default function AdminDashboard() {
   };
 
   const showMessage = (msg: string, isError = false) => {
-    setMessage(msg);
-    setTimeout(() => setMessage(''), 3000);
+    if (isError) {
+      toast.error(msg);
+    } else {
+      toast.success(msg);
+    }
   };
 
   const handleLogout = () => {
@@ -262,6 +266,7 @@ export default function AdminDashboard() {
   // ===== SKILL HANDLERS =====
   const handleAddSkill = async (data: any) => {
     try {
+      console.log('Sending skill data:', data); // Debug log
       const method = editingId ? 'PUT' : 'POST';
       const url = editingId ? `/api/skills/${editingId}` : '/api/skills';
 
@@ -370,12 +375,7 @@ export default function AdminDashboard() {
         </div>
       </header>
 
-      {/* Message */}
-      {message && (
-        <div className={`sticky top-0 z-40 ${message.includes('Error') ? 'bg-red-100' : 'bg-green-100'} px-4 py-3 text-center font-semibold ${message.includes('Error') ? 'text-red-700' : 'text-green-700'}`}>
-          {message}
-        </div>
-      )}
+      <Toaster position="top-right" richColors />
 
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Tabs */}

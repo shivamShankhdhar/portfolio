@@ -10,7 +10,7 @@ const SkillSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    enum: ['Frontend', 'Backend', 'Database', 'DevOps', 'Tools', 'Other'],
+    enum: ['Frontend', 'Backend', 'Database', 'DevOps', 'Tools', 'Programming Language', 'Other'],
     required: true,
   },
   proficiency: {
@@ -19,6 +19,7 @@ const SkillSchema = new mongoose.Schema({
     required: true,
   },
   icon: String,
+  image: String,
   description: String,
   createdAt: {
     type: Date,
@@ -26,4 +27,8 @@ const SkillSchema = new mongoose.Schema({
   },
 });
 
-export const Skill = mongoose.models.Skill || mongoose.model('Skill', SkillSchema);
+if (mongoose.models.Skill) {
+  delete mongoose.models.Skill;
+}
+
+export const Skill = mongoose.model('Skill', SkillSchema);

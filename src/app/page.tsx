@@ -16,9 +16,11 @@ import HeroSection from '@/components/sections/HeroSection';
 import ProjectsSection from '@/components/sections/ProjectsSection';
 import ExperienceSection from '@/components/sections/ExperienceSection';
 import EducationSection from '@/components/sections/EducationSection';
+import SkillsSection from '@/components/sections/SkillsSection';
 
 export default function Home() {
   const { theme } = useTheme();
+  const [isHydrated, setIsHydrated] = useState(false);
   const [projects, setProjects] = useState<any[]>([]);
   const [education, setEducation] = useState<any[]>([]);
   const [experience, setExperience] = useState<any[]>([]);
@@ -36,6 +38,12 @@ export default function Home() {
   const [loading, setLoading] = useState(true);  const [contactFormData, setContactFormData] = useState({ name: '', email: '', message: '' });
   const [contactLoading, setContactLoading] = useState(false);
   const [contactMessage, setContactMessage] = useState({ text: '', type: '' as 'success' | 'error' });
+  
+  // Hydration effect
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -94,28 +102,7 @@ export default function Home() {
       <EducationSection education={education} />
 
       {/* Skills Section */}
-      {skills.length > 0 && (
-        <section id="skills" className="relative border-t border-slate-200 dark:border-slate-800 bg-gradient-to-br from-slate-50 to-rose-50/30 dark:from-slate-900/50 dark:to-rose-900/20 px-6 py-20 sm:px-8 sm:py-24 overflow-hidden">
-          {/* Decorative gradient blob */}
-          <div className="absolute inset-0 opacity-20 dark:opacity-10 pointer-events-none">
-            <div className="absolute -bottom-20 -left-32 w-96 h-96 rounded-full bg-gradient-to-tr from-rose-400 to-rose-500 blur-3xl"></div>
-          </div>
-          <div className="relative mx-auto max-w-6xl">
-            <div className="mb-12">
-              <span className="inline-block text-sm font-semibold uppercase tracking-widest text-rose-600 dark:text-rose-400 mb-2">Expertise & Proficiency</span>
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent">Skills</h2>
-              <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">
-                Technologies and tools I work with.
-              </p>
-            </div>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {skills.map((skill) => (
-                <SkillCard key={skill._id} skill={skill} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      <SkillsSection skills={skills} />
 
       {/* Certifications Section */}
       {certifications.length > 0 && (
@@ -365,8 +352,8 @@ export default function Home() {
       <footer className="border-t border-slate-200 dark:border-slate-800 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900/50 dark:to-slate-950 px-6 py-5 sm:px-8 sm:py-16 pb-20">
         <div className="mx-auto max-w-6xl">
           <div className="flex flex-col items-center justify-center gap-8">
-            {/* Social Links */}
-            {(profile?.linkedinUrl || profile?.githubUrl || profile?.email)  &&(
+            {/* Social Links - Only render after hydration */}
+            {isHydrated && (profile?.linkedinUrl || profile?.githubUrl || profile?.email) && (
             <div className="flex items-center flex flex-col gap-6">
                 <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-2">Get in Touch</p>
 <div className="flex flex-row justify-center items-center gap-x-4">
@@ -411,7 +398,7 @@ export default function Home() {
           </div>
           </div>
           
-          )}
+            )}
           </div>
         </div>
       </footer>
