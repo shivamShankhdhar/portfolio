@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import QRCode from 'qrcode';
+import { createGradientQRCode } from '@/lib/qrGradient';
 import { FiSmartphone, FiMaximize2, FiX, FiCheck, FiCopy, FiExternalLink } from 'react-icons/fi';
 import { FaGooglePlay, FaAndroid } from 'react-icons/fa6';
 
@@ -25,14 +25,14 @@ export default function GameCardQRCode({
   const [copied, setCopied] = useState<boolean>(false);
 
   useEffect(() => {
-    QRCode.toDataURL(url, {
-      width: 320,
+    const isAmberMode = accentColor === 'amber';
+    createGradientQRCode(url, {
+      width: 340,
       margin: 1.5,
-      color: {
-        dark: '#0f1017',
-        light: '#ffffff',
-      },
-      errorCorrectionLevel: 'H',
+      gradientColors: isAmberMode
+        ? ['#f59e0b', '#d97706', '#78350f']
+        : ['#f43f5e', '#e11d48', '#881337'],
+      dotsColor: '#000000',
     })
       .then((dataUrl) => {
         setQrDataUrl(dataUrl);
@@ -40,7 +40,7 @@ export default function GameCardQRCode({
       .catch((err) => {
         console.error('Failed to generate QR code', err);
       });
-  }, [url]);
+  }, [url, accentColor]);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(url);
@@ -50,7 +50,7 @@ export default function GameCardQRCode({
 
   const isAmber = accentColor === 'amber';
   const borderColor = isAmber ? 'border-amber-500/40' : 'border-red-500/40';
-  const cornerColor = isAmber ? 'border-amber-400' : 'border-red-500';
+  const cornerColor = isAmber ? 'border-amber-400' : 'border-red-400';
   const badgeBg = isAmber
     ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
     : 'bg-red-500/15 text-red-300 border-red-500/30';
@@ -59,11 +59,11 @@ export default function GameCardQRCode({
   return (
     <div className="w-full">
       {/* Modern QR Scan Card Block */}
-      <div className={`relative overflow-hidden rounded-2xl p-4 bg-slate-900/95 dark:bg-[#0c0d16] text-white border ${borderColor} shadow-lg ${glowShadow} transition-all`}>
+      <div className={`relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br from-[#0c0d15] via-[#120e18] to-[#1a0c14] text-white border ${borderColor} shadow-xl ${glowShadow} transition-all`}>
         {/* Subtle glowing ambient gradient behind QR */}
         <div
           className={`absolute -top-10 -left-10 w-32 h-32 rounded-full blur-2xl pointer-events-none ${
-            isAmber ? 'bg-amber-600/15' : 'bg-red-600/15'
+            isAmber ? 'bg-amber-600/15' : 'bg-red-600/20'
           }`}
         />
 
@@ -72,16 +72,16 @@ export default function GameCardQRCode({
           {/* QR Code Viewfinder Container */}
           <div
             onClick={() => setIsModalOpen(true)}
-            className="group/qr relative shrink-0 p-2.5 rounded-2xl bg-white cursor-pointer shadow-md transition-transform duration-200 hover:scale-105 active:scale-95"
+            className="group/qr relative shrink-0 p-2.5 rounded-2xl bg-white shadow-md cursor-pointer transition-transform duration-200 hover:scale-105 active:scale-95"
             title="Click to enlarge QR code"
           >
             {/* Viewfinder Laser Corner Accents */}
-            <span className={`absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 ${cornerColor} rounded-tl-sm pointer-events-none`} />
-            <span className={`absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 ${cornerColor} rounded-tr-sm pointer-events-none`} />
-            <span className={`absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 ${cornerColor} rounded-bl-sm pointer-events-none`} />
-            <span className={`absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 ${cornerColor} rounded-br-sm pointer-events-none`} />
+            <span className="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-slate-900 rounded-tl-sm pointer-events-none" />
+            <span className="absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-slate-900 rounded-tr-sm pointer-events-none" />
+            <span className="absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 border-slate-900 rounded-bl-sm pointer-events-none" />
+            <span className="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-slate-900 rounded-br-sm pointer-events-none" />
 
-            {/* QR Image with Center Emblem */}
+            {/* QR Image */}
             <div className="relative w-28 h-28 flex items-center justify-center">
               {qrDataUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -95,21 +95,6 @@ export default function GameCardQRCode({
                   Generating...
                 </div>
               )}
-
-              {/* Center Game Emblem Overlay */}
-              {qrDataUrl && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="h-7 w-7 rounded-lg bg-white border border-slate-300 shadow-md flex items-center justify-center text-sm font-bold">
-                    <span>{gameIcon}</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Hover Enlarge Hint Overlay */}
-              <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px] opacity-0 group-hover/qr:opacity-100 rounded-lg flex items-center justify-center transition-opacity text-white text-[11px] font-bold gap-1">
-                <FiMaximize2 className="h-3.5 w-3.5 text-white" />
-                <span>Enlarge</span>
-              </div>
             </div>
           </div>
 
@@ -169,7 +154,7 @@ export default function GameCardQRCode({
           onClick={() => setIsModalOpen(false)}
         >
           <div
-            className="relative max-w-sm w-full rounded-3xl bg-[#0e0f19] border border-red-500/40 p-6 sm:p-7 text-white shadow-2xl space-y-5"
+            className="relative max-w-sm w-full rounded-3xl bg-gradient-to-br from-[#0c0d15] via-[#120e18] to-[#1a0c14] border border-red-500/40 p-6 sm:p-7 text-white shadow-2xl space-y-5"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
@@ -191,29 +176,17 @@ export default function GameCardQRCode({
               </div>
             </div>
 
-            {/* Big High-Res QR Code */}
-            <div className="p-4 rounded-2xl bg-white shadow-xl flex flex-col items-center justify-center relative">
-              {/* Corner brackets */}
-              <span className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-red-600 pointer-events-none" />
-              <span className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-red-600 pointer-events-none" />
-              <span className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-red-600 pointer-events-none" />
-              <span className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-red-600 pointer-events-none" />
-
+            {/* Big Clean High-Res QR Code */}
+            <div className="p-4 rounded-2xl bg-white shadow-2xl flex flex-col items-center justify-center relative">
               <div className="relative w-56 h-56 flex items-center justify-center">
                 {qrDataUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={qrDataUrl}
                     alt={`High-Res QR Code for ${gameTitle}`}
-                    className="w-full h-full object-contain rounded-xl"
+                    className="w-full h-full object-contain"
                   />
                 )}
-                {/* Center Badge */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="h-11 w-11 rounded-xl bg-white border border-slate-300 shadow-xl flex items-center justify-center text-xl font-bold">
-                    <span>{gameIcon}</span>
-                  </div>
-                </div>
               </div>
             </div>
 

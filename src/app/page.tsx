@@ -9,6 +9,7 @@ import SkillsSection from '@/components/sections/SkillsSection';
 import ExperienceSection from '@/components/sections/ExperienceSection';
 import EducationSection from '@/components/sections/EducationSection';
 import ContactSection from '@/components/sections/ContactSection';
+import PortfolioStickyQR from '@/components/PortfolioStickyQR';
 import {
   defaultProjects,
   defaultSkills,
@@ -127,6 +128,7 @@ export default function Home() {
         <EducationSection education={education} loading={loading} />
         <ContactSection adminEmail={adminEmail} profile={profile} />
       </SidebarLayout>
+      <PortfolioStickyQR />
     </div>
   );
 }

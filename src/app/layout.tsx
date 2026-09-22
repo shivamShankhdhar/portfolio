@@ -22,6 +22,17 @@ const caveat = Caveat({
 export const metadata: Metadata = {
   title: "Shivam Shankhdhar - Full Stack & Mobile Engineer",
   description: "Portfolio of Shivam Shankhdhar: Full Stack Software Engineer, Mobile Developer (React Native / Expo), and Java Spring Boot Architect.",
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.png', type: 'image/png', sizes: '512x512' },
+      { url: '/avatar/shivam_avatar.png', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
 };
 
 export default function RootLayout({

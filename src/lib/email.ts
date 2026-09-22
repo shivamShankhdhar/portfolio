@@ -11,14 +11,16 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// ✅ Verify transporter once (optional but helpful)
-transporter.verify((error, success) => {
-  if (error) {
-    console.error('❌ Mail transporter error:', error);
-  } else {
-    console.log('✅ Mail server is ready');
-  }
-});
+// ✅ Verify transporter once only if credentials exist
+if (process.env.GMAIL_USER && process.env.GMAIL_PASSWORD) {
+  transporter.verify((error, success) => {
+    if (error) {
+      console.error('❌ Mail transporter error:', error);
+    } else {
+      console.log('✅ Mail server is ready');
+    }
+  });
+}
 
 // ================= OTP EMAIL =================
 export async function sendOTPEmail(

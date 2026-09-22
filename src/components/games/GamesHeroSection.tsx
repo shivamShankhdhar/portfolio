@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import QRCode from 'qrcode';
+import { createGradientQRCode } from '@/lib/qrGradient';
 import {
   FiZap,
   FiCpu,
@@ -51,18 +51,17 @@ export default function GamesHeroSection({ games }: GamesHeroSectionProps) {
     'https://play.google.com/store/apps/details?id=' + (currentGame.package || 'chess.binge');
 
   useEffect(() => {
-    QRCode.toDataURL(activePlayStoreUrl, {
-      width: 280,
+    createGradientQRCode(activePlayStoreUrl, {
+      width: 320,
       margin: 1.5,
-      color: {
-        dark: '#0e0f18',
-        light: '#ffffff',
-      },
-      errorCorrectionLevel: 'H',
+      gradientColors: isLudo
+        ? ['#f59e0b', '#d97706', '#78350f']
+        : ['#f43f5e', '#e11d48', '#881337'],
+      dotsColor: '#000000',
     })
       .then((url) => setHeroQrUrl(url))
       .catch((err) => console.error('Hero QR error', err));
-  }, [activePlayStoreUrl]);
+  }, [activePlayStoreUrl, isLudo]);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(activePlayStoreUrl);
@@ -283,28 +282,17 @@ export default function GamesHeroSection({ games }: GamesHeroSectionProps) {
                   </div>
 
                   {/* Modern QR Viewfinder */}
-                  <div className="relative p-3 rounded-2xl bg-[#090a12] border border-white/10 flex flex-col items-center justify-center space-y-2.5">
-                    <div className="relative p-2 rounded-xl bg-white shadow-xl flex items-center justify-center">
-                      {/* Viewfinder laser corners */}
-                      <span className="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-red-500 rounded-tl-sm pointer-events-none" />
-                      <span className="absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-red-500 rounded-tr-sm pointer-events-none" />
-                      <span className="absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 border-red-500 rounded-bl-sm pointer-events-none" />
-                      <span className="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-red-500 rounded-br-sm pointer-events-none" />
-
+                  <div className="relative p-3 rounded-2xl bg-gradient-to-br from-[#0c0d15] via-[#120e18] to-[#1a0c14] border border-red-500/25 flex flex-col items-center justify-center space-y-2.5">
+                    <div className="relative p-2.5 rounded-xl bg-white shadow-xl flex items-center justify-center">
                       <div className="relative w-40 h-40 flex items-center justify-center">
                         {heroQrUrl && (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={heroQrUrl}
                             alt="Play Store QR"
-                            className="w-full h-full object-contain rounded-lg"
+                            className="w-full h-full object-contain"
                           />
                         )}
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                          <div className="h-9 w-9 rounded-lg bg-white border border-slate-300 shadow-md flex items-center justify-center text-base font-bold">
-                            {currentGame.icon || '🎮'}
-                          </div>
-                        </div>
                       </div>
                     </div>
 
