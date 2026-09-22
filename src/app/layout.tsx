@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Caveat } from "next/font/google";
+import Script from "next/script";
 import Providers from "@/components/Providers";
 import "./globals.css";
 
@@ -33,6 +34,9 @@ export const metadata: Metadata = {
       { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
     ],
   },
+  other: {
+    'google-adsense-account': 'ca-pub-1113302487630583',
+  },
 };
 
 export default function RootLayout({
@@ -45,6 +49,15 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${caveat.variable} h-full antialiased scroll-smooth`}
     >
+      <head>
+        <meta name="google-adsense-account" content="ca-pub-1113302487630583" />
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1113302487630583"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-white dark:bg-slate-950 text-slate-900 dark:text-white transition-colors duration-300">
         <Providers>
           {children}
