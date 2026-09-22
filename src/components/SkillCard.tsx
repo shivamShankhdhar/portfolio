@@ -1,9 +1,39 @@
 'use client';
 
-import React from 'react';
-import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiCpu, FiEdit2, FiTrash2 } from 'react-icons/fi';
+import {
+  SiReact,
+  SiNextdotjs,
+  SiTypescript,
+  SiJavascript,
+  SiNodedotjs,
+  SiMongodb,
+  SiPostgresql,
+  SiTailwindcss,
+  SiDocker,
+  SiGit,
+  SiGradle,
+  SiSpring,
+  SiRedis,
+  SiExpo,
+  SiPython,
+  SiDjango,
+  SiRedux,
+  SiMysql,
+  SiPrisma,
+  SiJenkins,
+  SiNginx,
+  SiPostman,
+  SiLinux,
+  SiWordpress,
+  SiHtml5,
+} from 'react-icons/si';
+import { VscVscode } from 'react-icons/vsc';
+import { FaJava } from 'react-icons/fa6';
 
-interface Skill {
+export interface Skill {
   _id: string;
   name: string;
   category: string;
@@ -11,139 +41,169 @@ interface Skill {
   icon?: string;
   image?: string;
   description?: string;
+  experienceYears?: string;
 }
 
 interface SkillCardProps {
   skill: Skill;
+  index?: number;
   onEdit?: (skill: Skill) => void;
   onDelete?: (id: string) => void;
   isAdmin?: boolean;
 }
 
-const proficiencyColors = {
-  Beginner: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300',
-  Intermediate: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300',
-  Advanced: 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300',
-  Expert: 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300',
-};
+function getBrandIcon(name: string) {
+  const n = name.toLowerCase();
+  if (n.includes('react native') || n.includes('expo')) return <SiExpo className="h-5 w-5 sm:h-6 sm:w-6 text-[#A855F7]" />;
+  if (n.includes('next')) return <SiNextdotjs className="h-5 w-5 sm:h-6 sm:w-6 text-slate-900 dark:text-white" />;
+  if (n.includes('react')) return <SiReact className="h-5 w-5 sm:h-6 sm:w-6 text-[#61DAFB]" />;
+  if (n.includes('typescript')) return <SiTypescript className="h-5 w-5 sm:h-6 sm:w-6 text-[#3178C6]" />;
+  if (n.includes('javascript')) return <SiJavascript className="h-5 w-5 sm:h-6 sm:w-6 text-[#F7DF1E]" />;
+  if (n.includes('java') && !n.includes('script')) return <FaJava className="h-5 w-5 sm:h-6 sm:w-6 text-[#ED8B00]" />;
+  if (n.includes('spring')) return <SiSpring className="h-5 w-5 sm:h-6 sm:w-6 text-[#6DB33F]" />;
+  if (n.includes('node')) return <SiNodedotjs className="h-5 w-5 sm:h-6 sm:w-6 text-[#5FA04E]" />;
+  if (n.includes('mongo')) return <SiMongodb className="h-5 w-5 sm:h-6 sm:w-6 text-[#47A248]" />;
+  if (n.includes('postgres') || (n.includes('sql') && !n.includes('my'))) return <SiPostgresql className="h-5 w-5 sm:h-6 sm:w-6 text-[#4169E1]" />;
+  if (n.includes('mysql')) return <SiMysql className="h-5 w-5 sm:h-6 sm:w-6 text-[#4479A1]" />;
+  if (n.includes('prisma')) return <SiPrisma className="h-5 w-5 sm:h-6 sm:w-6 text-slate-800 dark:text-slate-200" />;
+  if (n.includes('tailwind')) return <SiTailwindcss className="h-5 w-5 sm:h-6 sm:w-6 text-[#06B6D4]" />;
+  if (n.includes('docker')) return <SiDocker className="h-5 w-5 sm:h-6 sm:w-6 text-[#2496ED]" />;
+  if (n.includes('jenkins')) return <SiJenkins className="h-5 w-5 sm:h-6 sm:w-6 text-[#D24939]" />;
+  if (n.includes('nginx')) return <SiNginx className="h-5 w-5 sm:h-6 sm:w-6 text-[#009639]" />;
+  if (n.includes('git')) return <SiGit className="h-5 w-5 sm:h-6 sm:w-6 text-[#F05032]" />;
+  if (n.includes('gradle')) return <SiGradle className="h-5 w-5 sm:h-6 sm:w-6 text-[#02303A] dark:text-[#06B6D4]" />;
+  if (n.includes('redis')) return <SiRedis className="h-5 w-5 sm:h-6 sm:w-6 text-[#DC382D]" />;
+  if (n.includes('python')) return <SiPython className="h-5 w-5 sm:h-6 sm:w-6 text-[#3776AB]" />;
+  if (n.includes('django')) return <SiDjango className="h-5 w-5 sm:h-6 sm:w-6 text-[#092E20] dark:text-[#44B78B]" />;
+  if (n.includes('redux')) return <SiRedux className="h-5 w-5 sm:h-6 sm:w-6 text-[#764ABC]" />;
+  if (n.includes('postman')) return <SiPostman className="h-5 w-5 sm:h-6 sm:w-6 text-[#FF6C37]" />;
+  if (n.includes('linux')) return <SiLinux className="h-5 w-5 sm:h-6 sm:w-6 text-[#FCC624]" />;
+  if (n.includes('vscode')) return <VscVscode className="h-5 w-5 sm:h-6 sm:w-6 text-[#007ACC]" />;
+  if (n.includes('html')) return <SiHtml5 className="h-5 w-5 sm:h-6 sm:w-6 text-[#E34F26]" />;
+  if (n.includes('wordpress')) return <SiWordpress className="h-5 w-5 sm:h-6 sm:w-6 text-[#21759B]" />;
+  return <FiCpu className="h-5 w-5 sm:h-6 sm:w-6 text-red-600 dark:text-red-400" />;
+}
 
-export default function SkillCard({ skill, onEdit, onDelete, isAdmin = false }: SkillCardProps) {
-  const { ref, isVisible } = useScrollAnimation();
-  const [imageLoaded, setImageLoaded] = React.useState(true);
+export default function SkillCard({ skill, index = 0, onEdit, onDelete, isAdmin = false }: SkillCardProps) {
+  const [imgError, setImgError] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
-  // Capitalize first letter helper
-  const capitalizeFirstLetter = (str: string) => {
-    if (!str) return '';
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
-
-  const proficiencyWidth = {
-    Expert: 'w-full',
-    Advanced: 'w-3/4',
-    Intermediate: 'w-1/2',
-    Beginner: 'w-1/4',
-  };
-
-  const proficiencyGradient = {
-    Expert: 'from-purple-500 to-purple-600',
-    Advanced: 'from-orange-500 to-orange-600',
-    Intermediate: 'from-green-500 to-green-600',
-    Beginner: 'from-blue-500 to-blue-600',
-  };
-
-  const handleImageError = () => {
-    setImageLoaded(false);
-  };
+  // Gentle, calm idle floating cycle (no light flashes, no lightning)
+  const duration = 3.5 + (index % 5) * 0.4;
+  const yOffset = (index % 2 === 0 ? 3.5 : -3.5);
+  const delay = (index % 6) * 0.2;
 
   return (
-    <div
-      ref={ref}
-      className={`group relative overflow-hidden rounded-2xl border border-white/20 dark:border-white/10 bg-gradient-to-br from-white/80 to-white/60 dark:from-slate-800/50 dark:to-slate-900/50 backdrop-blur-xl p-6 shadow-lg transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-white/30 dark:hover:border-white/20 ${
-        isVisible
-          ? 'animate-fadeInScale opacity-100'
-          : 'opacity-0'
-      }`}
+    <motion.div
+      layout
+      className="relative flex flex-col items-center"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Background gradient blob */}
-      <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-orange-400/20 to-transparent rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500"></div>
-      
-      {/* Content wrapper */}
-      <div className="relative z-10 space-y-4">
-        {/* Logo and Name */}
-        <div className="flex items-center gap-3">
-          {skill.image && imageLoaded ? (
+      {/* Sleek Pill Card: Icon + Name */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.85, y: 15 }}
+        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        viewport={{ once: true }}
+        animate={{
+          y: [-yOffset, yOffset, -yOffset],
+        }}
+        transition={{
+          y: {
+            repeat: Infinity,
+            duration: duration,
+            ease: 'easeInOut',
+            delay: delay,
+          },
+          opacity: { duration: 0.35, delay: Math.min(index * 0.02, 0.3) },
+          scale: { type: 'spring', stiffness: 260, damping: 20, delay: Math.min(index * 0.02, 0.3) },
+        }}
+        whileHover={{
+          scale: 1.08,
+          y: -5,
+          borderColor: 'rgba(225, 29, 72, 0.8)',
+          boxShadow: '0 8px 24px -4px rgba(225, 29, 72, 0.22)',
+          transition: { type: 'spring', stiffness: 350, damping: 18 },
+        }}
+        whileTap={{ scale: 0.96 }}
+        className="relative flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-2xl bg-white dark:bg-[#111116] border border-slate-200/90 dark:border-red-950/40 shadow-xs cursor-pointer transition-colors duration-200"
+      >
+        {/* Technology Brand Icon */}
+        <div className="flex h-6 w-6 sm:h-7 sm:w-7 shrink-0 items-center justify-center">
+          {skill.image && !imgError ? (
             <img
               src={skill.image}
-              alt={capitalizeFirstLetter(skill.name)}
-              className="flex-shrink-0 h-14 w-14 object-contain rounded-lg group-hover:scale-110 transition-transform duration-300 p-2 bg-white dark:bg-slate-800/50"
-              onError={handleImageError}
-              crossOrigin="anonymous"
-              loading="lazy"
+              alt={skill.name}
+              className="h-5 w-5 sm:h-6 sm:w-6 object-contain"
+              onError={() => setImgError(true)}
             />
-          ) : skill.icon ? (
-            <div className="flex-shrink-0 h-14 w-14 flex items-center justify-center rounded-lg bg-gradient-to-br from-orange-400/20 to-orange-500/20 text-2xl group-hover:scale-110 transition-transform duration-300">
-              {skill.icon}
-            </div>
           ) : (
-            <div className="flex-shrink-0 h-14 w-14 flex items-center justify-center rounded-lg bg-gradient-to-br from-slate-300 to-slate-400 dark:from-slate-600 dark:to-slate-700 text-2xl group-hover:scale-110 transition-transform duration-300">
-              ⚙️
-            </div>
+            getBrandIcon(skill.name)
           )}
-          <h3 className="text-lg font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-            {capitalizeFirstLetter(skill.name)}
-          </h3>
         </div>
 
-        {/* Category and Proficiency */}
-        <div className="flex flex-wrap gap-2">
-          <span className="inline-block rounded-full bg-gradient-to-r from-slate-200/60 to-slate-100/60 dark:from-slate-700/60 dark:to-slate-800/60 backdrop-blur px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-300">
-            {skill.category}
-          </span>
-          <span
-            className={`inline-block rounded-full px-3 py-1 text-xs font-bold ${proficiencyColors[skill.proficiency as keyof typeof proficiencyColors]}`}
+        {/* Technology Name right after Icon */}
+        <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 capitalize whitespace-nowrap">
+          {skill.name}
+        </span>
+      </motion.div>
+
+      {/* Floating Detail Chip on Hover */}
+      <AnimatePresence>
+        {isHovered && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 5, scale: 0.92 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+            className="pointer-events-none absolute -top-12 left-1/2 -translate-x-1/2 z-50 whitespace-nowrap drop-shadow-xl"
           >
-            {skill.proficiency}
-          </span>
-        </div>
-
-        {skill.description && (
-          <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{skill.description}</p>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950/95 dark:bg-[#181822]/95 backdrop-blur-md border border-slate-700/80 dark:border-red-900/60 text-white text-xs shadow-xl">
+              <span className="font-bold text-white capitalize">{skill.name}</span>
+              <span className="h-1 w-1 rounded-full bg-red-400" />
+              <span className="text-[10px] font-semibold text-red-400 uppercase tracking-wider">
+                {skill.proficiency || 'Production'}
+              </span>
+              {skill.category && (
+                <span className="text-[10px] text-slate-400 hidden sm:inline">
+                  • {skill.category}
+                </span>
+              )}
+            </div>
+            <div className="w-2 h-2 bg-slate-950 dark:bg-[#181822] border-r border-b border-slate-700/80 dark:border-red-900/60 transform rotate-45 mx-auto -mt-1" />
+          </motion.div>
         )}
+      </AnimatePresence>
 
-        {/* Animated gradient progress bar */}
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Proficiency Level</span>
-            <span className="text-xs font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
-              {skill.proficiency}
-            </span>
-          </div>
-          <div className="h-3 w-full overflow-hidden rounded-full bg-gradient-to-r from-slate-200 to-slate-100 dark:from-slate-700 dark:to-slate-600 backdrop-blur">
-            <div
-              className={`h-full rounded-full bg-gradient-to-r ${proficiencyGradient[skill.proficiency as keyof typeof proficiencyGradient]} shadow-lg transition-all duration-1000 ${proficiencyWidth[skill.proficiency as keyof typeof proficiencyWidth]}`}
-            ></div>
-          </div>
+      {/* Admin Controls on Hover */}
+      {isAdmin && (
+        <div className="absolute -bottom-6 flex items-center gap-1 opacity-0 hover:opacity-100 transition-opacity z-10 bg-white dark:bg-[#121217] p-1 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
+          {onEdit && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(skill);
+              }}
+              className="p-1 text-slate-400 hover:text-blue-500"
+              aria-label="Edit"
+            >
+              <FiEdit2 className="h-3 w-3" />
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(skill._id);
+              }}
+              className="p-1 text-slate-400 hover:text-red-500"
+              aria-label="Delete"
+            >
+              <FiTrash2 className="h-3 w-3" />
+            </button>
+          )}
         </div>
-
-        {/* Admin Actions */}
-        {isAdmin && (
-          <div className="flex gap-2 border-t border-white/20 dark:border-white/10 pt-4">
-            <button
-              onClick={() => onEdit?.(skill)}
-              className="flex-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-3 py-2 text-sm font-semibold text-white transition-all duration-300 hover:shadow-lg hover:scale-105"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => onDelete?.(skill._id)}
-              className="flex-1 rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-3 py-2 text-sm font-semibold text-white transition-all duration-300 hover:shadow-lg hover:scale-105"
-            >
-              Delete
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
+      )}
+    </motion.div>
   );
 }
-  

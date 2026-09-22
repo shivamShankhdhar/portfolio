@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '@/context/ThemeContext';
-import { FiCode, FiBriefcase, FiBook, FiSun, FiMoon, FiStar, FiAward } from 'react-icons/fi';
+import { FiCode, FiBriefcase, FiBook, FiSun, FiMoon, FiAward, FiMail } from 'react-icons/fi';
+import { motion } from 'framer-motion';
 
 interface SidebarLayoutProps {
   children: React.ReactNode;
@@ -10,36 +11,38 @@ interface SidebarLayoutProps {
   hasExperience?: boolean;
   hasEducation?: boolean;
   hasSkills?: boolean;
-  hasCertifications?: boolean;
 }
 
-export default function SidebarLayout({ 
-  children, 
+export default function SidebarLayout({
+  children,
   hasProjects = true,
   hasExperience = true,
   hasEducation = true,
   hasSkills = true,
-  hasCertifications = true,
 }: SidebarLayoutProps) {
-
   const { theme, toggleTheme } = useTheme();
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const navItems = [
     { id: 'projects', icon: FiCode, label: 'Projects', show: hasProjects },
+    { id: 'skills', icon: FiAward, label: 'Skills', show: hasSkills },
     { id: 'experience', icon: FiBriefcase, label: 'Experience', show: hasExperience },
     { id: 'education', icon: FiBook, label: 'Education', show: hasEducation },
-    { id: 'skills', icon: FiStar, label: 'Skills', show: hasSkills },
-    { id: 'certifications', icon: FiAward, label: 'Certifications', show: hasCertifications },
-  ].filter(item => item.show);
+    { id: 'contact', icon: FiMail, label: 'Contact', show: true },
+  ].filter((item) => item.show);
 
-  // ✅ Hydration fix - ensure consistency between server and client
   useEffect(() => {
     setIsHydrated(true);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 110);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // ✅ Smooth scroll handler
   const handleScrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -50,10 +53,9 @@ export default function SidebarLayout({
     }
   };
 
-  // ✅ Intersection Observer (BEST WAY)
   useEffect(() => {
     const sections = navItems
-      .map(item => document.getElementById(item.id))
+      .map((item) => document.getElementById(item.id))
       .filter(Boolean);
 
     if (sections.length === 0) return;
@@ -61,23 +63,19 @@ export default function SidebarLayout({
     const observer = new IntersectionObserver(
       (entries) => {
         let visibleSection: string | null = null;
-
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             visibleSection = entry.target.id;
           }
         });
 
-        // Only set if it's in navItems
         if (visibleSection) {
           setActiveSection(visibleSection);
-        } else {
-          setActiveSection(null); // ✅ Fix: no section active
         }
       },
       {
         root: null,
-        rootMargin: '-40% 0px -50% 0px', // controls when active triggers
+        rootMargin: '-30% 0px -40% 0px',
         threshold: 0,
       }
     );
@@ -91,74 +89,82 @@ export default function SidebarLayout({
 
   return (
     <>
-      {/* 🔥 Floating Navbar - Only render after hydration */}
+      {/* Floating Bottom Quick Navigation Dock (Only visible when scrolled down) */}
       {isHydrated && (
-      <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 flex flex-row gap-2 bg-gradient-to-b from-rose-500 to-rose-600 rounded-2xl p-1.5 shadow-lg">
-        
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activeSection === item.id;
-
-          return (
-            <button
-              key={item.id}
-              onClick={() => handleScrollToSection(item.id)}
-              className={`
-                group relative flex items-center justify-center h-8 w-8 rounded-lg 
-                transition-all duration-200 ease-in-out
-                ${isActive 
-                  ? 'bg-white text-rose-500 scale-105' 
-                  : 'bg-rose-500 text-white hover:bg-rose-600'
-                }
-              `}
-            >
-              <Icon className="h-4 w-4" />
-
-              {/* Tooltip */}
-              <div className="
-                absolute top-14 px-3 py-2 rounded-lg whitespace-nowrap 
-                text-sm font-medium pointer-events-none
-                bg-slate-900 text-white opacity-0 group-hover:opacity-100
-                transition-all duration-200
-              ">
-                {item.label}
-              </div>
-            </button>
-          );
-        })}
-
-        {/* 🌙 Theme Toggle */}
-        {/* <button
-          onClick={toggleTheme}
-          className="group relative flex items-center justify-center h-10 w-10 rounded-lg bg-rose-500 text-white hover:bg-rose-600 transition"
+        <motion.nav
+          aria-label="Quick Section Navigation"
+          initial={{ y: 90, opacity: 0, scale: 0.9 }}
+          animate={{
+            y: isScrolled ? 0 : 90,
+            opacity: isScrolled ? 1 : 0,
+            scale: isScrolled ? 1 : 0.9,
+          }}
+          transition={{ type: 'spring', stiffness: 360, damping: 28 }}
+          className={`fixed bottom-5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-1.5 p-1.5 rounded-2xl bg-white/95 dark:bg-[#121217]/95 backdrop-blur-2xl border border-red-200/80 dark:border-red-900/50 shadow-2xl shadow-red-950/20 ${
+            isScrolled ? 'pointer-events-auto' : 'pointer-events-none'
+          }`}
         >
-          {theme === 'light' ? <FiMoon /> : <FiSun />}
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeSection === item.id;
 
-          <div className="
-            absolute top-14 px-3 py-2 rounded-lg whitespace-nowrap 
-            text-sm font-medium pointer-events-none
-            bg-slate-900 text-white opacity-0 group-hover:opacity-100
-            transition-all duration-200
-          ">
-            {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
-          </div>
-        </button> */}
-      </nav>
+            return (
+              <motion.button
+                key={item.id}
+                whileHover={{ scale: 1.12 }}
+                whileTap={{ scale: 0.92 }}
+                onClick={() => handleScrollToSection(item.id)}
+                aria-label={`Scroll to ${item.label}`}
+                className={`group relative flex items-center justify-center h-9 w-9 rounded-xl transition-colors duration-150 ${
+                  isActive
+                    ? 'text-white'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50/80 dark:hover:bg-red-950/40'
+                }`}
+              >
+                {/* Active Animated Pill Bubble */}
+                {isActive && (
+                  <motion.div
+                    layoutId="activeDockSection"
+                    transition={{ type: 'spring', stiffness: 450, damping: 30 }}
+                    className="absolute inset-0 rounded-xl bg-gradient-to-br from-red-600 to-rose-700 shadow-md shadow-red-600/40"
+                  />
+                )}
+
+                <span className="relative z-10">
+                  <Icon className="h-4 w-4" />
+                </span>
+
+                {/* Floating Tooltip */}
+                <div className="absolute -top-10 px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap pointer-events-none bg-slate-900 text-white dark:bg-white dark:text-slate-900 opacity-0 group-hover:opacity-100 transition-opacity duration-150 shadow-lg">
+                  {item.label}
+                </div>
+              </motion.button>
+            );
+          })}
+
+          <div className="h-5 w-[1px] bg-slate-200 dark:bg-red-900/30 mx-0.5" />
+
+          {/* Bottom Dock Theme Toggle */}
+          <motion.button
+            whileHover={{ scale: 1.12 }}
+            whileTap={{ scale: 0.9, rotate: 180 }}
+            onClick={toggleTheme}
+            aria-label="Toggle Dark or Light Mode"
+            className="group relative flex items-center justify-center h-9 w-9 rounded-xl text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50/80 dark:hover:bg-red-950/40 transition-colors"
+          >
+            {theme === 'dark' ? (
+              <FiSun className="h-4 w-4 text-amber-400" />
+            ) : (
+              <FiMoon className="h-4 w-4 text-red-600" />
+            )}
+            <div className="absolute -top-10 px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap pointer-events-none bg-slate-900 text-white dark:bg-white dark:text-slate-900 opacity-0 group-hover:opacity-100 transition-opacity duration-150 shadow-lg">
+              {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+            </div>
+          </motion.button>
+        </motion.nav>
       )}
 
-      {/* ✅ IMPORTANT: Add scroll margin to ALL sections */}
-      <main className="space-y-0 scroll-smooth">
-  {React.Children.map(children, (child) => {
-    if (React.isValidElement(child)) {
-      const element = child as React.ReactElement<any>;
-
-      return React.cloneElement(element, {
-        className: `${element.props?.className || ''}`,
-      });
-    }
-    return child;
-  })}
-</main>
+      <main className="space-y-0 scroll-smooth">{children}</main>
     </>
   );
 }

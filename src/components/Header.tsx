@@ -1,119 +1,162 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
-import { FiMenu, FiX } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { FiMenu, FiX, FiSun, FiMoon, FiSend } from 'react-icons/fi';
+import { useTheme } from '@/context/ThemeContext';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 110);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const navLinks = [
+    { href: '#projects', label: 'Projects' },
+    { href: '#skills', label: 'Skills' },
+    { href: '#experience', label: 'Experience' },
+    { href: '#education', label: 'Education' },
+    { href: '#contact', label: 'Contact' },
+  ];
 
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200/50 dark:border-slate-700/50">
-      <div className="mx-auto max-w-6xl px-6 sm:px-8">
+    <motion.header
+      initial={{ y: 0, opacity: 1 }}
+      animate={{
+        y: isScrolled ? -85 : 0,
+        opacity: isScrolled ? 0 : 1,
+      }}
+      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
+        isScrolled ? 'pointer-events-none' : 'pointer-events-auto'
+      } bg-white/90 dark:bg-[#09090b]/90 backdrop-blur-xl border-b border-red-500/15 dark:border-red-950/40 shadow-sm`}
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
+          
           {/* Logo & Branding */}
           <Link href="/" className="group flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-              <span className="text-lg font-bold text-white">SS</span>
-            </div>
-            <div className="hidden sm:block">
-              <p className="text-lg font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent">
-                Shivam
+            <motion.div
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.96 }}
+              className="relative flex h-10 w-10 overflow-hidden rounded-full border-2 border-red-500/40 shadow-md shadow-red-600/25 transition-all duration-300"
+            >
+              <img
+                src="/avatar/shivam_avatar.png"
+                alt="Shivam Shankhdhar"
+                className="h-full w-full object-cover"
+              />
+            </motion.div>
+            <div>
+              <p className="text-base font-bold tracking-tight text-slate-900 dark:text-white transition-colors">
+                Shivam <span className="text-red-600 dark:text-red-500">Shankhdhar</span>
               </p>
-              <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">Full Stack Developer</p>
+              <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                Full Stack & Mobile Engineer
+              </p>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden gap-8 md:flex items-center">
-            <Link 
-              href="/#projects" 
-              className="text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all duration-300 hover:text-blue-600 dark:hover:text-blue-400 relative group"
-            >
-              Projects
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 group-hover:w-full transition-all duration-300"></span>
-            </Link>
-            <Link 
-              href="/#experience" 
-              className="text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all duration-300 hover:text-blue-600 dark:hover:text-blue-400 relative group"
-            >
-              Experience
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 group-hover:w-full transition-all duration-300"></span>
-            </Link>
-            <Link 
-              href="/#skills" 
-              className="text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all duration-300 hover:text-blue-600 dark:hover:text-blue-400 relative group"
-            >
-              Skills
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 group-hover:w-full transition-all duration-300"></span>
-            </Link>
-            <Link 
-              href="/#contact" 
-              className="text-sm font-semibold text-slate-700 dark:text-slate-300 transition-all duration-300 hover:text-blue-600 dark:hover:text-blue-400 relative group"
-            >
-              Contact
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 group-hover:w-full transition-all duration-300"></span>
-            </Link>
+          <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+            {navLinks.map((link) => (
+              <motion.div key={link.href} whileHover={{ y: -1 }} whileTap={{ y: 0 }}>
+                <Link
+                  href={link.href}
+                  className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all duration-150"
+                >
+                  {link.label}
+                </Link>
+              </motion.div>
+            ))}
           </nav>
 
-          {/* Admin Button & Mobile Menu */}
-          <div className="flex items-center gap-3">
-            <Link
-              href="/admin"
-              className="hidden sm:inline-flex rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:shadow-lg hover:scale-105"
-            >
-              Admin
-            </Link>
+          {/* Right Action Buttons */}
+          <div className="flex items-center gap-2.5">
+            {/* Theme Toggle Button */}
+            {mounted && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.92, rotate: 180 }}
+                onClick={toggleTheme}
+                aria-label="Toggle Color Theme"
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 dark:border-red-950/40 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-400 hover:border-red-500/40 shadow-xs transition-all duration-200"
+              >
+                {theme === 'dark' ? (
+                  <FiSun className="h-4 w-4 text-amber-400" />
+                ) : (
+                  <FiMoon className="h-4 w-4 text-red-600" />
+                )}
+              </motion.button>
+            )}
 
-            <button
-              className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-              onClick={() => setIsOpen(!isOpen)}
+            {/* Hire / Contact CTA */}
+            <motion.a
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              href="#contact"
+              className="hidden md:inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white shadow-sm shadow-red-600/20 hover:shadow-md hover:shadow-red-600/35 transition-all duration-200"
             >
-              {isOpen ? (
-                <FiX className="h-6 w-6 text-slate-900 dark:text-white" />
-              ) : (
-                <FiMenu className="h-6 w-6 text-slate-900 dark:text-white" />
-              )}
+              <FiSend className="h-3.5 w-3.5" />
+              <span>Hire Me</span>
+            </motion.a>
+
+            {/* Mobile Hamburger Menu */}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle mobile menu"
+              className="md:hidden flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 dark:border-red-950/40 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-red-950/40 transition-colors"
+            >
+              {isOpen ? <FiX className="h-5 w-5" /> : <FiMenu className="h-5 w-5" />}
             </button>
           </div>
         </div>
-
-        {/* Mobile Navigation */}
-        {isOpen && (
-          <nav className="border-t border-slate-200/50 dark:border-slate-700/50 py-4 md:hidden space-y-2 pb-4">
-            <Link 
-              href="/#projects" 
-              className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
-            >
-              Projects
-            </Link>
-            <Link 
-              href="/#experience" 
-              className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
-            >
-              Experience
-            </Link>
-            <Link 
-              href="/#skills" 
-              className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
-            >
-              Skills
-            </Link>
-            <Link 
-              href="/#contact" 
-              className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
-            >
-              Contact
-            </Link>
-            <Link
-              href="/admin"
-              className="block mt-2 w-full rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-3 py-2 text-sm font-semibold text-white text-center transition-all duration-300"
-            >
-              Admin Panel
-            </Link>
-          </nav>
-        )}
       </div>
-    </header>
+
+      {/* Mobile Drawer Navigation */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden border-b border-red-200/40 dark:border-red-900/40 bg-white/95 dark:bg-[#09090b]/95 backdrop-blur-xl px-4 pt-2 pb-5 space-y-1 overflow-hidden"
+          >
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsOpen(false)}
+                className="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="pt-2 flex items-center justify-end border-t border-slate-200/60 dark:border-red-900/30 px-3">
+              <a
+                href="#contact"
+                onClick={() => setIsOpen(false)}
+                className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-600 text-white shadow-sm"
+              >
+                <FiSend className="h-3 w-3" />
+                <span>Contact</span>
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.header>
   );
 }

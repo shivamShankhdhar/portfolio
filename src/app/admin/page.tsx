@@ -3,594 +3,610 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { toast, Toaster } from 'sonner';
+import { toast } from 'sonner';
+import {
+  FiLogOut,
+  FiUser,
+  FiCode,
+  FiBriefcase,
+  FiBook,
+  FiAward,
+  FiMail,
+  FiPlus,
+  FiExternalLink,
+  FiDatabase,
+  FiSun,
+  FiMoon,
+  FiTrash2,
+} from 'react-icons/fi';
+import { useTheme } from '@/context/ThemeContext';
 import ProfileForm from '@/components/admin/forms/ProfileForm';
 import ProjectForm from '@/components/admin/forms/ProjectForm';
 import EducationForm from '@/components/admin/forms/EducationForm';
 import ExperienceForm from '@/components/admin/forms/ExperienceForm';
 import SkillForm from '@/components/SkillForm';
 import CertificationForm from '@/components/admin/forms/CertificationForm';
-import ProjectCard from '@/components/cards/ProjectCard';
-import EducationCard from '@/components/cards/EducationCard';
-import ExperienceCard from '@/components/cards/ExperienceCard';
-import SkillCard from '@/components/SkillCard';
-import CertificationCard from '@/components/cards/CertificationCard';
-import { FiLogOut } from 'react-icons/fi';
+import ProjectCard, { Project } from '@/components/cards/ProjectCard';
+import EducationCard, { Education } from '@/components/cards/EducationCard';
+import ExperienceCard, { Experience } from '@/components/cards/ExperienceCard';
+import SkillCard, { Skill } from '@/components/SkillCard';
+import CertificationCard, { Certification } from '@/components/cards/CertificationCard';
 
-type Tab = 'profile' | 'projects' | 'education' | 'experience' | 'skills' | 'certifications';
+type Tab = 'profile' | 'projects' | 'skills' | 'experience' | 'education' | 'certifications' | 'messages';
 
-interface Project {
-  _id: string;
-  title: string;
-  description: string;
-  image?: string;
-  technologies: string[];
-  link?: string;
-  github?: string;
-  startDate: string;
-  endDate?: string;
-}
-
-interface Education {
-  _id: string;
-  school: string;
-  degree: string;
-  field: string;
-  startDate: string;
-  endDate?: string;
-  description?: string;
-  grade?: string;
-}
-
-interface Experience {
-  _id: string;
-  company: string;
-  position: string;
-  description: string;
-  startDate: string;
-  endDate?: string;
-  isCurrentRole: boolean;
-  technologies?: string[];
-}
-
-interface Skill {
+interface ContactMessage {
   _id: string;
   name: string;
-  category: string;
-  proficiency: string;
-  icon?: string;
-  image?: string;
-  description?: string;
-}
-
-interface Certification {
-  _id: string;
-  title: string;
-  issuer: string;
-  issueDate: string;
-  expiryDate?: string;
-  credentialId?: string;
-  credentialUrl?: string;
-  image?: string;
-  description?: string;
+  email: string;
+  message: string;
+  createdAt: string;
 }
 
 export default function AdminDashboard() {
   const router = useRouter();
+  const { theme, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<Tab>('profile');
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [education, setEducation] = useState<Education[]>([]);
-  const [experience, setExperience] = useState<Experience[]>([]);
-  const [skills, setSkills] = useState<Skill[]>([]);
-  const [certifications, setCertifications] = useState<Certification[]>([]);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editingData, setEditingData] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
+  const [dbConfigured, setDbConfigured] = useState<boolean>(false);
   const [adminEmail, setAdminEmail] = useState<string>('');
-  const [adminToken, setAdminToken] = useState<string>('');
 
+  // Data states
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [skills, setSkills] = useState<Skill[]>([]);
+  const [experience, setExperience] = useState<Experience[]>([]);
+  const [education, setEducation] = useState<Education[]>([]);
+  const [certifications, setCertifications] = useState<Certification[]>([]);
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
+
+  // Form modals / editing states
+  const [isAddingNew, setIsAddingNew] = useState(false);
+  const [editingItem, setEditingItem] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Auth Check
   useEffect(() => {
-    // Check if user is authenticated
     const token = localStorage.getItem('adminToken');
     const email = localStorage.getItem('adminEmail');
     if (!token) {
       router.push('/login');
       return;
     }
-    setAdminEmail(email || '');
-    setAdminToken(token);
-    fetchAllData();
-  }, []);
+    setAdminEmail(email || 'Admin');
+  }, [router]);
 
+  // Check DB status
+  const checkDbStatus = async () => {
+    try {
+      const res = await fetch('/api/auth');
+      if (res.ok) {
+        const data = await res.json();
+        setDbConfigured(Boolean(data.dbConfigured));
+      }
+    } catch {
+      setDbConfigured(false);
+    }
+  };
+
+  // Fetch all entities
   const fetchAllData = async () => {
     try {
       setLoading(true);
-      const [projectRes, eduRes, expRes, skillRes, certRes] = await Promise.all([
+      await checkDbStatus();
+
+      const [pRes, sRes, expRes, eduRes, certRes, msgRes] = await Promise.allSettled([
         fetch('/api/projects'),
-        fetch('/api/education'),
-        fetch('/api/experience'),
         fetch('/api/skills'),
+        fetch('/api/experience'),
+        fetch('/api/education'),
         fetch('/api/certifications'),
+        fetch('/api/messages'),
       ]);
 
-      if (projectRes.ok) setProjects(await projectRes.json());
-      if (eduRes.ok) setEducation(await eduRes.json());
-      if (expRes.ok) setExperience(await expRes.json());
-      if (skillRes.ok) setSkills(await skillRes.json());
-      if (certRes.ok) setCertifications(await certRes.json());
-    } catch (error) {
-      showMessage('Error fetching data', true);
-      console.error(error);
+      if (pRes.status === 'fulfilled' && pRes.value.ok) setProjects(await pRes.value.json());
+      if (sRes.status === 'fulfilled' && sRes.value.ok) setSkills(await sRes.value.json());
+      if (expRes.status === 'fulfilled' && expRes.value.ok) setExperience(await expRes.value.json());
+      if (eduRes.status === 'fulfilled' && eduRes.value.ok) setEducation(await eduRes.value.json());
+      if (certRes.status === 'fulfilled' && certRes.value.ok) setCertifications(await certRes.value.json());
+      if (msgRes.status === 'fulfilled' && msgRes.value.ok) {
+        const data = await msgRes.value.json();
+        if (data.messages) setMessages(data.messages);
+      }
+    } catch (e) {
+      console.error('Error fetching admin data:', e);
     } finally {
       setLoading(false);
     }
   };
 
-  const showMessage = (msg: string, isError = false) => {
-    if (isError) {
-      toast.error(msg);
-    } else {
-      toast.success(msg);
-    }
-  };
+  useEffect(() => {
+    fetchAllData();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminEmail');
+    toast.success('Logged out successfully');
     router.push('/login');
   };
 
-  // ===== PROJECT HANDLERS =====
-  const handleAddProject = async (data: any) => {
+  // Generic Save / Update handler
+  const handleSaveItem = async (entity: string, data: any) => {
     try {
-      const method = editingId ? 'PUT' : 'POST';
-      const url = editingId ? `/api/projects/${editingId}` : '/api/projects';
+      const method = editingItem ? 'PUT' : 'POST';
+      const endpoint = editingItem ? `/api/${entity}/${editingItem._id}` : `/api/${entity}`;
 
-      const res = await fetch(url, {
+      const res = await fetch(endpoint, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
 
-      if (res.ok) {
-        showMessage(editingId ? 'Project updated!' : 'Project added!');
-        fetchAllData();
-        setEditingId(null);
-        setEditingData(null);
-      } else {
-        showMessage('Error saving project', true);
-      }
-    } catch (error) {
-      showMessage('Error saving project', true);
-      console.error(error);
+      const resData = await res.json();
+      if (!res.ok) throw new Error(resData.message || resData.error || 'Failed to save');
+
+      toast.success(`${editingItem ? 'Updated' : 'Created'} successfully!`);
+      setIsAddingNew(false);
+      setEditingItem(null);
+      fetchAllData();
+    } catch (err: any) {
+      toast.error('Save failed', { description: err.message });
     }
   };
 
-  const handleDeleteProject = async (id: string) => {
-    if (!confirm('Are you sure?')) return;
-    try {
-      const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        showMessage('Project deleted!');
-        fetchAllData();
-      } else {
-        showMessage('Error deleting project', true);
-      }
-    } catch (error) {
-      showMessage('Error deleting project', true);
-    }
-  };
+  // Generic Delete handler
+  const handleDeleteItem = async (entity: string, id: string) => {
+    if (!confirm('Are you sure you want to delete this item?')) return;
 
-  // ===== EDUCATION HANDLERS =====
-  const handleAddEducation = async (data: any) => {
     try {
-      const method = editingId ? 'PUT' : 'POST';
-      const url = editingId ? `/api/education/${editingId}` : '/api/education';
-
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+      const res = await fetch(`/api/${entity}/${id}`, {
+        method: 'DELETE',
       });
 
-      if (res.ok) {
-        showMessage(editingId ? 'Education updated!' : 'Education added!');
-        fetchAllData();
-        setEditingId(null);
-        setEditingData(null);
-      } else {
-        showMessage('Error saving education', true);
+      if (!res.ok) {
+        const resData = await res.json();
+        throw new Error(resData.message || resData.error || 'Failed to delete');
       }
-    } catch (error) {
-      showMessage('Error saving education', true);
-      console.error(error);
+
+      toast.success('Deleted successfully');
+      fetchAllData();
+    } catch (err: any) {
+      toast.error('Delete failed', { description: err.message });
     }
   };
 
-  const handleDeleteEducation = async (id: string) => {
-    if (!confirm('Are you sure?')) return;
+  // Delete message
+  const handleDeleteMessage = async (id: string) => {
+    if (!confirm('Delete this message?')) return;
     try {
-      const res = await fetch(`/api/education/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        showMessage('Education deleted!');
-        fetchAllData();
-      } else {
-        showMessage('Error deleting education', true);
-      }
-    } catch (error) {
-      showMessage('Error deleting education', true);
+      const res = await fetch(`/api/messages?id=${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to delete');
+      toast.success('Message deleted');
+      setMessages(messages.filter((m) => m._id !== id));
+    } catch (err: any) {
+      toast.error(err.message);
     }
   };
 
-  // ===== EXPERIENCE HANDLERS =====
-  const handleAddExperience = async (data: any) => {
-    try {
-      const method = editingId ? 'PUT' : 'POST';
-      const url = editingId ? `/api/experience/${editingId}` : '/api/experience';
-
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      if (res.ok) {
-        showMessage(editingId ? 'Experience updated!' : 'Experience added!');
-        fetchAllData();
-        setEditingId(null);
-        setEditingData(null);
-      } else {
-        showMessage('Error saving experience', true);
-      }
-    } catch (error) {
-      showMessage('Error saving experience', true);
-      console.error(error);
-    }
-  };
-
-  const handleDeleteExperience = async (id: string) => {
-    if (!confirm('Are you sure?')) return;
-    try {
-      const res = await fetch(`/api/experience/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        showMessage('Experience deleted!');
-        fetchAllData();
-      } else {
-        showMessage('Error deleting experience', true);
-      }
-    } catch (error) {
-      showMessage('Error deleting experience', true);
-    }
-  };
-
-  // ===== SKILL HANDLERS =====
-  const handleAddSkill = async (data: any) => {
-    try {
-      console.log('Sending skill data:', data); // Debug log
-      const method = editingId ? 'PUT' : 'POST';
-      const url = editingId ? `/api/skills/${editingId}` : '/api/skills';
-
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      const responseData = await res.json();
-
-      if (res.ok) {
-        showMessage(editingId ? 'Skill updated!' : 'Skill added!');
-        fetchAllData();
-        setEditingId(null);
-        setEditingData(null);
-      } else {
-        // Display specific error message from API
-        showMessage(responseData.error || 'Error saving skill', true);
-      }
-    } catch (error) {
-      showMessage('Error saving skill', true);
-      console.error(error);
-    }
-  };
-
-  const handleDeleteSkill = async (id: string) => {
-    if (!confirm('Are you sure?')) return;
-    try {
-      const res = await fetch(`/api/skills/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        showMessage('Skill deleted!');
-        fetchAllData();
-      } else {
-        showMessage('Error deleting skill', true);
-      }
-    } catch (error) {
-      showMessage('Error deleting skill', true);
-    }
-  };
-
-  // ===== CERTIFICATION HANDLERS =====
-  const handleAddCertification = async (data: any) => {
-    try {
-      const method = editingId ? 'PUT' : 'POST';
-      const url = editingId ? `/api/certifications/${editingId}` : '/api/certifications';
-
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      if (res.ok) {
-        showMessage(editingId ? 'Certification updated!' : 'Certification added!');
-        fetchAllData();
-        setEditingId(null);
-        setEditingData(null);
-      } else {
-        showMessage('Error saving certification', true);
-      }
-    } catch (error) {
-      showMessage('Error saving certification', true);
-      console.error(error);
-    }
-  };
-
-  const handleDeleteCertification = async (id: string) => {
-    if (!confirm('Are you sure?')) return;
-    try {
-      const res = await fetch(`/api/certifications/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        showMessage('Certification deleted!');
-        fetchAllData();
-      } else {
-        showMessage('Error deleting certification', true);
-      }
-    } catch (error) {
-      showMessage('Error deleting certification', true);
-    }
-  };
+  const tabs = [
+    { id: 'profile', label: 'Profile', icon: FiUser },
+    { id: 'projects', label: 'Projects', icon: FiCode, count: projects.length },
+    { id: 'skills', label: 'Skills', icon: FiAward, count: skills.length },
+    { id: 'experience', label: 'Experience', icon: FiBriefcase, count: experience.length },
+    { id: 'education', label: 'Education', icon: FiBook, count: education.length },
+    { id: 'certifications', label: 'Certifications', icon: FiAward, count: certifications.length },
+    { id: 'messages', label: 'Inbox', icon: FiMail, count: messages.length },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
-      {/* Header */}
-      <header className="border-b border-slate-200 bg-white shadow-sm">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-orange-600">
-                <span className="text-lg font-bold text-white">SS</span>
-              </div>
-              <span className="text-xl font-bold text-slate-900">Admin Panel</span>
-            </Link>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-slate-600">{adminEmail}</span>
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 rounded-lg bg-red-100 dark:bg-red-900/30 px-4 py-2 text-sm font-semibold text-red-700 dark:text-red-300 transition-colors hover:bg-red-200 dark:hover:bg-red-900/50"
-              >
-                <FiLogOut className="h-4 w-4" />
-                Logout
-              </button>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#09090b] text-slate-900 dark:text-slate-100 transition-colors duration-200 pb-24">
+      {/* Top Navbar */}
+      <header className="sticky top-0 z-40 glass-panel border-b border-red-200/60 dark:border-red-900/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-red-600 to-rose-700 text-white font-bold shadow-md shadow-red-600/30">
+              <span className="text-xs">SS</span>
             </div>
+            <div>
+              <p className="text-sm font-bold text-slate-900 dark:text-white">Admin Control Center</p>
+              <p className="text-[11px] text-slate-500 truncate max-w-[200px]">{adminEmail}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#121217] text-slate-700 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-400 transition"
+              aria-label="Toggle Theme"
+            >
+              {theme === 'dark' ? <FiSun className="h-4 w-4 text-amber-400" /> : <FiMoon className="h-4 w-4 text-red-600" />}
+            </button>
+
+            {/* View Live Portfolio */}
+            <Link
+              href="/"
+              target="_blank"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 hover:text-red-600 transition"
+            >
+              <FiExternalLink className="h-3.5 w-3.5" />
+              <span>Live Site</span>
+            </Link>
+
+            {/* Logout */}
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition"
+            >
+              <FiLogOut className="h-3.5 w-3.5" />
+              <span>Sign Out</span>
+            </button>
           </div>
         </div>
       </header>
 
-      <Toaster position="top-right" richColors />
-
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        {/* Tabs */}
-        <div className="mb-8 flex gap-4 border-b border-slate-200 overflow-x-auto">
-          {(['profile', 'projects', 'education', 'experience', 'skills', 'certifications'] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => {
-                setActiveTab(tab);
-                setEditingId(null);
-                setEditingData(null);
-              }}
-              className={`border-b-2 px-4 py-3 font-semibold capitalize transition-colors whitespace-nowrap ${
-                activeTab === tab
-                  ? 'border-orange-500 text-orange-600'
-                  : 'border-transparent text-slate-600 hover:text-slate-900'
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Database Status Alert Banner */}
+        <div
+          className={`p-4 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm ${
+            dbConfigured
+              ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-500/30 text-emerald-800 dark:text-emerald-200'
+              : 'bg-amber-50 dark:bg-amber-950/30 border-amber-500/40 text-amber-900 dark:text-amber-200'
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
+                dbConfigured ? 'bg-emerald-600 text-white' : 'bg-amber-600 text-white'
               }`}
             >
-              {tab}
-            </button>
-          ))}
+              <FiDatabase className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-sm font-bold">
+                {dbConfigured ? 'MongoDB Connected & Active' : 'MongoDB URI Pending in .env'}
+              </p>
+              <p className="text-xs opacity-90">
+                {dbConfigured
+                  ? 'All changes save immediately and persist to your MongoDB database.'
+                  : 'Operating in safe fallback mode. To persist updates to your own database, paste your MongoDB URI in the MONGO_URI entry in portfolio/.env'}
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={checkDbStatus}
+            className="text-xs font-bold underline shrink-0 hover:opacity-80"
+          >
+            Re-check Status
+          </button>
         </div>
 
-        <div className="grid gap-12 lg:grid-cols-2">
-          {/* Form Section */}
-          <div>
-            {activeTab === 'profile' && (
-              <ProfileForm
-                token={adminToken}
-                onSuccess={() => showMessage('Profile updated successfully!')}
-              />
-            )}
-            {activeTab === 'projects' && (
-              <ProjectForm
-                onSubmit={handleAddProject}
-                initialData={editingData}
-              />
-            )}
-            {activeTab === 'education' && (
-              <EducationForm
-                onSubmit={handleAddEducation}
-                initialData={editingData}
-              />
-            )}
-            {activeTab === 'experience' && (
-              <ExperienceForm
-                onSubmit={handleAddExperience}
-                initialData={editingData}
-              />
-            )}
-            {activeTab === 'skills' && (
-              <SkillForm
-                skill={editingData}
-                onSave={handleAddSkill}
-                onCancel={() => {
-                  setEditingId(null);
-                  setEditingData(null);
-                }}
-              />
-            )}
-            {activeTab === 'certifications' && (
-              <CertificationForm
-                certification={editingData}
-                onSave={handleAddCertification}
-                onCancel={() => {
-                  setEditingId(null);
-                  setEditingData(null);
-                }}
-              />
-            )}
-            {editingId && (activeTab === 'projects' || activeTab === 'education' || activeTab === 'experience') && (
+        {/* Tab Navigation */}
+        <div className="flex overflow-x-auto gap-2 p-1.5 rounded-2xl bg-white dark:bg-[#121217] border border-slate-200 dark:border-red-950/30 shadow-sm scrollbar-none">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+
+            return (
               <button
+                key={tab.id}
                 onClick={() => {
-                  setEditingId(null);
-                  setEditingData(null);
+                  setActiveTab(tab.id as Tab);
+                  setIsAddingNew(false);
+                  setEditingItem(null);
                 }}
-                className="mt-4 w-full rounded-lg border border-slate-300 px-6 py-3 font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+                className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all ${
+                  isActive
+                    ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-md shadow-red-600/25'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40'
+                }`}
               >
-                Cancel Editing
+                <Icon className="h-4 w-4" />
+                <span>{tab.label}</span>
+                {typeof tab.count === 'number' && (
+                  <span
+                    className={`px-1.5 py-0.2 rounded-full text-[10px] ${
+                      isActive ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                    }`}
+                  >
+                    {tab.count}
+                  </span>
+                )}
               </button>
-            )}
-          </div>
+            );
+          })}
+        </div>
 
-          {/* Content List Section */}
-          <div className="space-y-6">
-            {activeTab === 'projects' && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold text-slate-900">
-                  Projects ({projects.length})
-                </h3>
-                {projects.length === 0 ? (
-                  <p className="text-slate-600">No projects yet. Add one using the form!</p>
-                ) : (
-                  <div className="grid gap-4">
-                    {projects.map((project) => (
-                      <ProjectCard
-                        key={project._id}
-                        project={project}
-                        onEdit={(proj: Project) => {
-                          setEditingId(proj._id);
-                          setEditingData(proj);
-                        }}
-                        onDelete={handleDeleteProject}
-                        isAdmin
-                      />
-                    ))}
-                  </div>
+        {/* Tab Contents */}
+        <div className="space-y-6">
+          {/* 1. Profile Tab */}
+          {activeTab === 'profile' && (
+            <ProfileForm onSuccess={fetchAllData} />
+          )}
+
+          {/* 2. Projects Tab */}
+          {activeTab === 'projects' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">Manage Projects</h3>
+                  <p className="text-xs text-slate-500">Showcase mobile apps, web applications, and backend systems.</p>
+                </div>
+                {!isAddingNew && !editingItem && (
+                  <button
+                    onClick={() => setIsAddingNew(true)}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-md transition"
+                  >
+                    <FiPlus className="h-4 w-4" />
+                    <span>Add Project</span>
+                  </button>
                 )}
               </div>
-            )}
 
-            {activeTab === 'education' && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold text-slate-900">
-                  Education ({education.length})
-                </h3>
-                {education.length === 0 ? (
-                  <p className="text-slate-600">No education records yet. Add one using the form!</p>
-                ) : (
-                  <div className="grid gap-4">
-                    {education.map((edu) => (
-                      <EducationCard
-                        key={edu._id}
-                        education={edu}
-                        onEdit={(e: Education) => {
-                          setEditingId(e._id);
-                          setEditingData(e);
-                        }}
-                        onDelete={handleDeleteEducation}
-                        isAdmin
-                      />
-                    ))}
-                  </div>
+              {(isAddingNew || editingItem) ? (
+                <ProjectForm
+                  initialData={editingItem}
+                  onSubmit={(data) => handleSaveItem('projects', data)}
+                  onCancel={() => {
+                    setIsAddingNew(false);
+                    setEditingItem(null);
+                  }}
+                />
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {projects.map((p) => (
+                    <ProjectCard
+                      key={p._id}
+                      project={p}
+                      isAdmin={true}
+                      onEdit={(proj) => setEditingItem(proj)}
+                      onDelete={(id) => handleDeleteItem('projects', id)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 3. Skills Tab */}
+          {activeTab === 'skills' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">Technical Skills</h3>
+                  <p className="text-xs text-slate-500">Add or edit competencies, proficiencies, and categories.</p>
+                </div>
+                {!isAddingNew && !editingItem && (
+                  <button
+                    onClick={() => setIsAddingNew(true)}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-md transition"
+                  >
+                    <FiPlus className="h-4 w-4" />
+                    <span>Add Skill</span>
+                  </button>
                 )}
               </div>
-            )}
 
-            {activeTab === 'experience' && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold text-slate-900">
-                  Experience ({experience.length})
-                </h3>
-                {experience.length === 0 ? (
-                  <p className="text-slate-600">No experience records yet. Add one using the form!</p>
-                ) : (
-                  <div className="grid gap-4">
-                    {experience.map((exp) => (
-                      <ExperienceCard
-                        key={exp._id}
-                        experience={exp}
-                        onEdit={(e: Experience) => {
-                          setEditingId(e._id);
-                          setEditingData(e);
-                        }}
-                        onDelete={handleDeleteExperience}
-                        isAdmin
-                      />
-                    ))}
-                  </div>
+              {(isAddingNew || editingItem) ? (
+                <SkillForm
+                  skill={editingItem}
+                  onSave={async (data) => handleSaveItem('skills', data)}
+                  onCancel={() => {
+                    setIsAddingNew(false);
+                    setEditingItem(null);
+                  }}
+                />
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {skills.map((s) => (
+                    <SkillCard
+                      key={s._id}
+                      skill={s}
+                      isAdmin={true}
+                      onEdit={(sk) => setEditingItem(sk)}
+                      onDelete={(id) => handleDeleteItem('skills', id)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 4. Experience Tab */}
+          {activeTab === 'experience' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">Experience Timeline</h3>
+                  <p className="text-xs text-slate-500">Record engineering roles and production accomplishments.</p>
+                </div>
+                {!isAddingNew && !editingItem && (
+                  <button
+                    onClick={() => setIsAddingNew(true)}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-md transition"
+                  >
+                    <FiPlus className="h-4 w-4" />
+                    <span>Add Experience</span>
+                  </button>
                 )}
               </div>
-            )}
 
-            {activeTab === 'skills' && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold text-slate-900">
-                  Skills ({skills.length})
-                </h3>
-                {skills.length === 0 ? (
-                  <p className="text-slate-600">No skills yet. Add one using the form!</p>
-                ) : (
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {skills.map((skill) => (
-                      <SkillCard
-                        key={skill._id}
-                        skill={skill}
-                        onEdit={(s: Skill) => {
-                          setEditingId(s._id);
-                          setEditingData(s);
-                        }}
-                        onDelete={handleDeleteSkill}
-                        isAdmin
-                      />
-                    ))}
-                  </div>
+              {(isAddingNew || editingItem) ? (
+                <ExperienceForm
+                  initialData={editingItem}
+                  onSubmit={(data) => handleSaveItem('experience', data)}
+                  onCancel={() => {
+                    setIsAddingNew(false);
+                    setEditingItem(null);
+                  }}
+                />
+              ) : (
+                <div className="space-y-4">
+                  {experience.map((exp) => (
+                    <ExperienceCard
+                      key={exp._id}
+                      experience={exp}
+                      isAdmin={true}
+                      onEdit={(item) => setEditingItem(item)}
+                      onDelete={(id) => handleDeleteItem('experience', id)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 5. Education Tab */}
+          {activeTab === 'education' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">Academic Qualifications</h3>
+                  <p className="text-xs text-slate-500">Formal degrees and academic achievements.</p>
+                </div>
+                {!isAddingNew && !editingItem && (
+                  <button
+                    onClick={() => setIsAddingNew(true)}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-md transition"
+                  >
+                    <FiPlus className="h-4 w-4" />
+                    <span>Add Education</span>
+                  </button>
                 )}
               </div>
-            )}
 
-            {activeTab === 'certifications' && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold text-slate-900">
-                  Certifications ({certifications.length})
-                </h3>
-                {certifications.length === 0 ? (
-                  <p className="text-slate-600">No certifications yet. Add one using the form!</p>
-                ) : (
-                  <div className="grid gap-4">
-                    {certifications.map((cert) => (
-                      <CertificationCard
-                        key={cert._id}
-                        certification={cert}
-                        onEdit={(c: Certification) => {
-                          setEditingId(c._id);
-                          setEditingData(c);
-                        }}
-                        onDelete={handleDeleteCertification}
-                        isAdmin
-                      />
-                    ))}
-                  </div>
+              {(isAddingNew || editingItem) ? (
+                <EducationForm
+                  initialData={editingItem}
+                  onSubmit={(data) => handleSaveItem('education', data)}
+                  onCancel={() => {
+                    setIsAddingNew(false);
+                    setEditingItem(null);
+                  }}
+                />
+              ) : (
+                <div className="space-y-4">
+                  {education.map((edu) => (
+                    <EducationCard
+                      key={edu._id}
+                      education={edu}
+                      isAdmin={true}
+                      onEdit={(item) => setEditingItem(item)}
+                      onDelete={(id) => handleDeleteItem('education', id)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 6. Certifications Tab */}
+          {activeTab === 'certifications' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">Professional Certifications</h3>
+                  <p className="text-xs text-slate-500">Industry certifications and verified credentials.</p>
+                </div>
+                {!isAddingNew && !editingItem && (
+                  <button
+                    onClick={() => setIsAddingNew(true)}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-md transition"
+                  >
+                    <FiPlus className="h-4 w-4" />
+                    <span>Add Certification</span>
+                  </button>
                 )}
               </div>
-            )}
-          </div>
+
+              {(isAddingNew || editingItem) ? (
+                <CertificationForm
+                  initialData={editingItem}
+                  onSubmit={(data) => handleSaveItem('certifications', data)}
+                  onCancel={() => {
+                    setIsAddingNew(false);
+                    setEditingItem(null);
+                  }}
+                />
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {certifications.map((cert) => (
+                    <CertificationCard
+                      key={cert._id}
+                      certification={cert}
+                      isAdmin={true}
+                      onEdit={(item) => setEditingItem(item)}
+                      onDelete={(id) => handleDeleteItem('certifications', id)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 7. Messages Inbox Tab */}
+          {activeTab === 'messages' && (
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Visitor Messages</h3>
+                <p className="text-xs text-slate-500">Inquiries sent directly through your portfolio contact form.</p>
+              </div>
+
+              {messages.length === 0 ? (
+                <div className="p-12 text-center rounded-2xl border border-dashed border-red-200 dark:border-red-900/30">
+                  <FiMail className="h-8 w-8 text-slate-400 mx-auto mb-2" />
+                  <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">Your inbox is empty</p>
+                  <p className="text-xs text-slate-400 mt-0.5">When visitors send messages on your contact section, they will appear here.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {messages.map((msg) => (
+                    <div
+                      key={msg._id}
+                      className="p-5 rounded-2xl border border-red-200/60 dark:border-red-900/30 bg-white dark:bg-[#121217] shadow-sm space-y-3"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-red-950/30 pb-3">
+                        <div>
+                          <p className="text-sm font-bold text-slate-900 dark:text-white">{msg.name}</p>
+                          <a
+                            href={`mailto:${msg.email}`}
+                            className="text-xs font-semibold text-red-600 dark:text-red-400 hover:underline"
+                          >
+                            {msg.email}
+                          </a>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs text-slate-400">
+                            {msg.createdAt ? new Date(msg.createdAt).toLocaleString() : ''}
+                          </span>
+                          <button
+                            onClick={() => handleDeleteMessage(msg._id)}
+                            className="p-1.5 text-slate-400 hover:text-red-600 transition"
+                            aria-label="Delete message"
+                          >
+                            <FiTrash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">
+                        {msg.message}
+                      </p>
+
+                      <div className="pt-2">
+                        <a
+                          href={`mailto:${msg.email}?subject=Re: Portfolio Inquiry`}
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-red-600 dark:text-red-400 hover:underline"
+                        >
+                          <FiMail className="h-3.5 w-3.5" />
+                          <span>Reply via Email</span>
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

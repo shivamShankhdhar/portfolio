@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/db';
+import connectDB, { isDbConfigured } from '@/lib/db';
 import Profile from '@/models/Profile';
+import Message from '@/models/Message';
 import { sendContactConfirmationEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
-    await connectDB();
-
     const { name, email, message } = await request.json();
 
-    // Validate input
     if (!name || !email || !message) {
       return NextResponse.json(
         { error: 'Name, email, and message are required' },
@@ -17,7 +15,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -26,35 +23,50 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get developer's email and name from Profile
-    const profile = await Profile.findOne();
-    const developerEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
-    const developerName = profile?.name || 'Shivam Shankhdhar';
+    // Save to Database if DB is configured
+    if (isDbConfigured()) {
+      try {
+        await connectDB();
+        await Message.create({ name, email, message });
+      } catch (dbErr) {
+        console.warn('Could not save message to database:', dbErr);
+      }
+    }
 
-    // Send confirmation emails
-    const emailResult = await sendContactConfirmationEmail(
-      email,
-      name,
-      message,
-      developerEmail,
-      developerName
-    );
+    // Try sending email if SMTP is configured
+    const hasSmtp = Boolean(process.env.GMAIL_USER && process.env.GMAIL_PASSWORD);
+    if (hasSmtp) {
+      try {
+        let developerEmail = process.env.ADMIN_EMAIL || 's.shankhdhar1981@gmail.com';
+        let developerName = 'Shivam Shankhdhar';
 
-    if (!emailResult.success) {
-      return NextResponse.json(
-        { error:  'Failed to send emails' },
-        { status: 500 }
-      );
+        if (isDbConfigured()) {
+          try {
+            const profile = await Profile.findOne();
+            if (profile?.name) developerName = profile.name;
+          } catch {}
+        }
+
+        await sendContactConfirmationEmail(
+          email,
+          name,
+          message,
+          developerEmail,
+          developerName
+        );
+      } catch (emailErr) {
+        console.warn('Could not send confirmation email:', emailErr);
+      }
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Your message has been sent successfully. Check your email for confirmation.',
+      message: 'Your message has been received! Thank you for reaching out.',
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Contact form error:', error);
     return NextResponse.json(
-      { error: 'Failed to process contact form' },
+      { error: error.message || 'Failed to process contact form' },
       { status: 500 }
     );
   }

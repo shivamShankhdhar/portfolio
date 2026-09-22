@@ -1,13 +1,15 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { FiSave, FiX } from 'react-icons/fi';
 
 interface ExperienceFormProps {
   onSubmit: (data: any) => void;
+  onCancel?: () => void;
   initialData?: any;
 }
 
-export default function ExperienceForm({ onSubmit, initialData }: ExperienceFormProps) {
+export default function ExperienceForm({ onSubmit, onCancel, initialData }: ExperienceFormProps) {
   const [formData, setFormData] = useState({
     company: '',
     position: '',
@@ -34,7 +36,7 @@ export default function ExperienceForm({ onSubmit, initialData }: ExperienceForm
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
     }));
@@ -44,113 +46,154 @@ export default function ExperienceForm({ onSubmit, initialData }: ExperienceForm
     e.preventDefault();
     onSubmit({
       ...formData,
-      technologies: formData.technologies.split(',').map(t => t.trim()).filter(t => t),
+      technologies: formData.technologies
+        .split(',')
+        .map((t) => t.trim())
+        .filter((t) => t),
     });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 rounded-xl border border-slate-200 bg-white p-8 shadow-md">
-      <h2 className="text-2xl font-bold text-slate-900">{initialData ? 'Edit Experience' : 'Add New Experience'}</h2>
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 rounded-2xl border border-red-200/60 dark:border-red-900/30 bg-white dark:bg-[#121217] p-6 sm:p-8 shadow-xl"
+    >
+      <div className="flex items-center justify-between border-b border-slate-100 dark:border-red-950/30 pb-4">
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+          {initialData ? 'Edit Work Experience' : 'Add New Work Experience'}
+        </h2>
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40"
+          >
+            <FiX className="h-5 w-5" />
+          </button>
+        )}
+      </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
-          <label className="block text-sm font-semibold text-slate-700">Company</label>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+            Company Name *
+          </label>
           <input
             type="text"
+            required
             name="company"
             value={formData.company}
             onChange={handleChange}
-            required
-            className="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2 text-slate-900 focus:border-blue-500 focus:outline-none"
-            placeholder="Company name"
+            placeholder="e.g. Acme Technologies"
+            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-red-950/40 bg-slate-50/50 dark:bg-[#181822] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700">Position</label>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+            Job Title / Position *
+          </label>
           <input
             type="text"
+            required
             name="position"
             value={formData.position}
             onChange={handleChange}
-            required
-            className="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2 text-slate-900 focus:border-blue-500 focus:outline-none"
-            placeholder="Job title"
+            placeholder="e.g. Lead Full Stack & Mobile Engineer"
+            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-red-950/40 bg-slate-50/50 dark:bg-[#181822] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500"
           />
         </div>
-      </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+        <div className="md:col-span-2">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+            Description & Key Accomplishments *
+          </label>
+          <textarea
+            required
+            rows={3}
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            placeholder="Describe your technical contributions, features delivered, and architectural highlights..."
+            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-red-950/40 bg-slate-50/50 dark:bg-[#181822] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 resize-none"
+          />
+        </div>
+
         <div>
-          <label className="block text-sm font-semibold text-slate-700">Start Date</label>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+            Start Date *
+          </label>
           <input
             type="date"
+            required
             name="startDate"
             value={formData.startDate}
             onChange={handleChange}
-            required
-            className="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2 text-slate-900 focus:border-blue-500 focus:outline-none"
+            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-red-950/40 bg-slate-50/50 dark:bg-[#181822] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700">End Date</label>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+            End Date {!formData.isCurrentRole && '*'}
+          </label>
           <input
             type="date"
             name="endDate"
+            disabled={formData.isCurrentRole}
             value={formData.endDate}
             onChange={handleChange}
-            disabled={formData.isCurrentRole}
-            className="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2 text-slate-900 focus:border-blue-500 focus:outline-none disabled:bg-slate-100"
+            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-red-950/40 bg-slate-50/50 dark:bg-[#181822] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 disabled:opacity-50"
           />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+            Technologies Used (comma-separated)
+          </label>
+          <input
+            type="text"
+            name="technologies"
+            value={formData.technologies}
+            onChange={handleChange}
+            placeholder="React Native, Expo, Java, Spring Boot, PostgreSQL"
+            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-red-950/40 bg-slate-50/50 dark:bg-[#181822] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500"
+          />
+        </div>
+
+        <div className="md:col-span-2 flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="isCurrentRole"
+            name="isCurrentRole"
+            checked={formData.isCurrentRole}
+            onChange={handleChange}
+            className="h-4 w-4 rounded text-red-600 focus:ring-red-500"
+          />
+          <label htmlFor="isCurrentRole" className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            This is my current role
+          </label>
         </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-semibold text-slate-700">Description</label>
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          required
-          rows={4}
-          className="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2 text-slate-900 focus:border-blue-500 focus:outline-none"
-          placeholder="Job description and responsibilities"
-        />
+      <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-red-950/30">
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+          >
+            Cancel
+          </button>
+        )}
+        <button
+          type="submit"
+          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold text-sm shadow-md shadow-red-600/25 transition"
+        >
+          <FiSave className="h-4 w-4" />
+          <span>{initialData ? 'Update Experience' : 'Save Experience'}</span>
+        </button>
       </div>
-
-      <div>
-        <label className="block text-sm font-semibold text-slate-700">Technologies (comma-separated)</label>
-        <input
-          type="text"
-          name="technologies"
-          value={formData.technologies}
-          onChange={handleChange}
-          className="mt-2 w-full rounded-lg border border-slate-300 px-4 py-2 text-slate-900 focus:border-blue-500 focus:outline-none"
-          placeholder="React, Node.js, PostgreSQL"
-        />
-      </div>
-
-      <div className="flex items-center gap-3">
-        <input
-          type="checkbox"
-          name="isCurrentRole"
-          id="isCurrentRole"
-          checked={formData.isCurrentRole}
-          onChange={handleChange}
-          className="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-        />
-        <label htmlFor="isCurrentRole" className="text-sm font-semibold text-slate-700">
-          Currently working here
-        </label>
-      </div>
-
-      <button
-        type="submit"
-        className="w-full rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-blue-700"
-      >
-        {initialData ? 'Update Experience' : 'Add Experience'}
-      </button>
     </form>
   );
 }

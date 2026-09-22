@@ -1,60 +1,67 @@
-import connectDB from '@/lib/db';
+import connectDB, { isDbConfigured } from '@/lib/db';
 import Profile from '@/models/Profile';
+
+const defaultProfile = {
+  name: 'Shivam Shankhdhar',
+  bio: 'Passionate Full Stack & Mobile Engineer dedicated to architecting high-performance web applications, native mobile experiences (React Native / Expo), and scalable backend systems. Proven track record of shipping end-to-end products to production.',
+  available: true,
+  roles: [
+    'Full Stack Engineer',
+    'Mobile App Specialist (React Native / Expo)',
+    'Java & Spring Boot Engineer',
+    'MERN Stack Architect',
+    'Next.js & TypeScript Developer',
+  ],
+  linkedinUrl: 'https://linkedin.com/in/shivam-shankhdhar',
+  githubUrl: 'https://github.com/shivamShankhdhar',
+  email: 's.shankhdhar1981@gmail.com',
+};
 
 export async function GET() {
   try {
-    await connectDB();
+    if (!isDbConfigured()) {
+      return Response.json({
+        success: true,
+        data: defaultProfile,
+      });
+    }
 
-    // Get the profile (should be only one)
+    await connectDB();
     const profile = await Profile.findOne().lean();
 
     if (!profile) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'No profile found',
-        }),
-        { status: 404 }
-      );
+      return Response.json({
+        success: true,
+        data: defaultProfile,
+      });
     }
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        data: profile,
-      }),
-      { status: 200 }
-    );
-  } catch (error) {
-    console.error('Profile fetch error:', error);
-    return new Response(
-      JSON.stringify({
-        success: false,
-        error: 'Failed to fetch profile',
-      }),
-      { status: 500 }
-    );
+    return Response.json({
+      success: true,
+      data: profile,
+    });
+  } catch (error: any) {
+    return Response.json({
+      success: true,
+      data: defaultProfile,
+    });
   }
 }
 
 export async function POST(request: Request) {
   try {
-    await connectDB();
+    if (!isDbConfigured()) {
+      return Response.json({ success: false, error: 'Database not connected. Please set MONGO_URI in .env.' }, { status: 503 });
+    }
 
+    await connectDB();
     const body = await request.json();
     const { name, bio, linkedinUrl, githubUrl, email, available, roles } = body;
 
     if (!name) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Name is required',
-        }),
-        { status: 400 }
-      );
+      return Response.json({ success: false, error: 'Name is required' }, { status: 400 });
     }
 
-    // Create new profile (delete existing first to ensure only one)
     await Profile.deleteMany({});
     const profile = new Profile({
       name,
@@ -67,73 +74,34 @@ export async function POST(request: Request) {
     });
 
     await profile.save();
-
-    return new Response(
-      JSON.stringify({
-        success: true,
-        data: profile,
-      }),
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error('Profile creation error:', error);
-    return new Response(
-      JSON.stringify({
-        success: false,
-        error: 'Failed to create profile',
-      }),
-      { status: 500 }
-    );
+    return Response.json({ success: true, data: profile }, { status: 201 });
+  } catch (error: any) {
+    return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 }
 
 export async function PUT(request: Request) {
   try {
-    await connectDB();
+    if (!isDbConfigured()) {
+      return Response.json({ success: false, error: 'Database not connected. Please set MONGO_URI in .env.' }, { status: 503 });
+    }
 
+    await connectDB();
     const body = await request.json();
     const { name, bio, linkedinUrl, githubUrl, email, available, roles } = body;
 
     if (!name) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Name is required',
-        }),
-        { status: 400 }
-      );
+      return Response.json({ success: false, error: 'Name is required' }, { status: 400 });
     }
 
-    // Update existing profile or create if doesn't exist
     const profile = await Profile.findOneAndUpdate(
       {},
-      {
-        name,
-        bio,
-        linkedinUrl,
-        githubUrl,
-        email,
-        available,
-        roles,
-      },
+      { name, bio, linkedinUrl, githubUrl, email, available, roles },
       { upsert: true, new: true }
     );
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        data: profile,
-      }),
-      { status: 200 }
-    );
-  } catch (error) {
-    console.error('Profile update error:', error);
-    return new Response(
-      JSON.stringify({
-        success: false,
-        error: 'Failed to update profile',
-      }),
-      { status: 500 }
-    );
+    return Response.json({ success: true, data: profile }, { status: 200 });
+  } catch (error: any) {
+    return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 }

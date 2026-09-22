@@ -25,3 +25,4 @@ const CertificationSchema = new mongoose.Schema({
 });
 
 export const Certification = mongoose.models.Certification || mongoose.model('Certification', CertificationSchema);
+export default Certification;

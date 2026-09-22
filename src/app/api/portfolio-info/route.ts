@@ -1,4 +1,4 @@
-import connectDB from '@/lib/db';
+import connectDB, { isDbConfigured } from '@/lib/db';
 import ValidAdmin from '@/models/ValidAdmin';
 
 type AdminType = {
@@ -8,37 +8,31 @@ type AdminType = {
 };
 
 export async function GET() {
+  const defaultEmail = process.env.ADMIN_EMAIL || 's.shankhdhar1981@gmail.com';
+  const defaultName = 'Shivam Shankhdhar';
+
   try {
-    await connectDB();
-
-    const admin = await ValidAdmin.findOne().lean<AdminType>();
-
-    if (!admin) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'No admin email found',
-        }),
-        { status: 404 }
-      );
+    if (!isDbConfigured()) {
+      return Response.json({
+        success: true,
+        email: defaultEmail,
+        name: defaultName,
+      });
     }
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        email: admin.email,
-        name: admin.name,
-      }),
-      { status: 200 }
-    );
+    await connectDB();
+    const admin = await ValidAdmin.findOne().lean<AdminType>();
+
+    return Response.json({
+      success: true,
+      email: admin?.email || defaultEmail,
+      name: admin?.name || defaultName,
+    });
   } catch (error) {
-    console.error('Portfolio info error:', error);
-    return new Response(
-      JSON.stringify({
-        success: false,
-        error: 'Failed to fetch portfolio info',
-      }),
-      { status: 500 }
-    );
+    return Response.json({
+      success: true,
+      email: defaultEmail,
+      name: defaultName,
+    });
   }
 }

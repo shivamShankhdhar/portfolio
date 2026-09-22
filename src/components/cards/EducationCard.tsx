@@ -1,12 +1,10 @@
 'use client';
 
 import React from 'react';
-import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { FaGraduationCap } from 'react-icons/fa';
-import { FiCalendar } from 'react-icons/fi';
-import { MdEdit, MdDelete } from 'react-icons/md';
+import { FaGraduationCap } from 'react-icons/fa6';
+import { FiCalendar, FiEdit2, FiTrash2, FiAward } from 'react-icons/fi';
 
-interface Education {
+export interface Education {
   _id: string;
   school: string;
   degree: string;
@@ -30,110 +28,74 @@ export default function EducationCard({
   onDelete,
   isAdmin = false,
 }: EducationCardProps) {
-  const { ref, isVisible } = useScrollAnimation();
-
-  const startYear = new Date(education.startDate).getFullYear();
-  const endYear = education.endDate
-    ? new Date(education.endDate).getFullYear()
-    : 'Present';
+  const startYear = education.startDate ? new Date(education.startDate).getFullYear() : '';
+  const endYear = education.endDate ? new Date(education.endDate).getFullYear() : 'Present';
 
   return (
-    <div
-      ref={ref}
-      className={`group relative overflow-hidden rounded-2xl border border-white/10 
-      bg-white/5 backdrop-blur-xl p-6 shadow-lg 
-      transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl 
-      hover:border-rose-500/40
-      ${isVisible ? 'animate-fadeInScale opacity-100' : 'opacity-0'}`}
-    >
-      {/* 🔴 Glow effect */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500">
-        <div className="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br from-rose-500 to-red-600 blur-3xl opacity-30"></div>
+    <div className="group relative flex flex-col justify-between h-full w-full rounded-3xl border-2 border-dotted border-red-300 dark:border-red-900/60 hover:border-red-500 dark:hover:border-red-500/90 bg-white dark:bg-[#101015] p-6 shadow-xs hover:shadow-xl hover:shadow-red-600/10 hover:-translate-y-1 transition-all duration-200">
+      
+      <div>
+        {/* Top Row: Icon + Duration */}
+        <div className="flex items-start justify-between gap-3 mb-4">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 group-hover:scale-105 transition-transform duration-200">
+            <FaGraduationCap className="h-5 w-5" />
+          </div>
+
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-[#181822] text-slate-600 dark:text-slate-400 border border-slate-200/80 dark:border-red-950/40">
+            <FiCalendar className="h-3 w-3 text-red-500" />
+            <span>{startYear} – {endYear}</span>
+          </span>
+        </div>
+
+        {/* Degree & Institution */}
+        <div className="space-y-1 mb-3">
+          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors line-clamp-2">
+            {education.degree} in {education.field}
+          </h3>
+          <p className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300">
+            {education.school}
+          </p>
+        </div>
+
+        {/* Grade / Distinction Badge */}
+        {education.grade && (
+          <div className="mb-3">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-900/40">
+              <FiAward className="h-3 w-3 text-red-500" />
+              <span>{education.grade}</span>
+            </span>
+          </div>
+        )}
+
+        {/* Description */}
+        {education.description && (
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">
+            {education.description}
+          </p>
+        )}
       </div>
 
-      {/* Top Section */}
-  <div className="flex gap-5 relative z-10">
-
-  {/* LEFT COLUMN (ICON - FIXED) */}
-  <div className="flex flex-col items-center">
-    <div
-      className="flex h-12 w-12 items-center justify-center rounded-xl 
-      bg-gradient-to-br from-rose-500 to-red-600 text-white shadow-md"
-    >
-      <FaGraduationCap className="text-lg" />
-    </div>
-
-    {/* Optional vertical line (timeline feel) */}
-    {/* <div className="w-[2px] flex-1 bg-white/10 mt-3 rounded-full"></div> */}
-  </div>
-
-  {/* RIGHT COLUMN (CONTENT) */}
-  <div className="flex flex-col gap-2 w-full">
-
-    {/* Title */}
-    <h3 className="text-lg font-semibold text-white">
-      {education.school}
-    </h3>
-
-    {/* Degree */}
-    <p className="text-sm text-rose-400 font-medium">
-      {education.degree}
-    </p>
-
-    {/* Field */}
-    <p className="text-sm text-slate-400">
-      {education.field}
-    </p>
-
-    {/* Year */}
-    {/* <div className="flex items-center gap-2 text-xs text-slate-400 mt-1">
-      <FiCalendar />
-      <span>
-        {startYear} - {endYear}
-      </span>
-    </div> */}
-
-    {/* Description */}
-    {education.description && (
-      <p className="mt-2 text-sm text-slate-400 leading-relaxed">
-        {education.description}
-      </p>
-    )}
-
-    {/* Grade */}
-    {/* {education.grade && (
-      <div
-        className="mt-2 inline-block w-fit rounded-md 
-        bg-rose-500/10 border border-rose-500/20 
-        px-3 py-1 text-xs font-semibold text-rose-400"
-      >
-        GPA: {education.grade}
-      </div>
-    )} */}
-  </div>
-</div>
-      {/* Admin Actions */}
+      {/* Admin Controls */}
       {isAdmin && (
-        <div className="mt-5 flex gap-3 border-t border-white/10 pt-4 relative z-10">
-          <button
-            onClick={() => onEdit?.(education)}
-            className="flex flex-1 items-center justify-center gap-2 
-            rounded-lg bg-amber-500/90 px-3 py-2 text-sm font-semibold text-white 
-            hover:bg-amber-500 transition-all"
-          >
-            <MdEdit />
-            Edit
-          </button>
-
-          <button
-            onClick={() => onDelete?.(education._id)}
-            className="flex flex-1 items-center justify-center gap-2 
-            rounded-lg bg-red-500/90 px-3 py-2 text-sm font-semibold text-white 
-            hover:bg-red-500 transition-all"
-          >
-            <MdDelete />
-            Delete
-          </button>
+        <div className="mt-4 pt-2 border-t border-slate-100 dark:border-red-950/30 flex justify-end gap-2">
+          {onEdit && (
+            <button
+              onClick={() => onEdit(education)}
+              className="p-1 text-slate-400 hover:text-blue-600 transition"
+              aria-label="Edit"
+            >
+              <FiEdit2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={() => onDelete(education._id)}
+              className="p-1 text-slate-400 hover:text-red-600 transition"
+              aria-label="Delete"
+            >
+              <FiTrash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
         </div>
       )}
     </div>

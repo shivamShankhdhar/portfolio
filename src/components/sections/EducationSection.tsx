@@ -1,42 +1,42 @@
-import EducationCard from '@/components/cards/EducationCard';
+'use client';
 
-export default function EducationSection({ education, isAdmin, onEdit, onDelete }: any) {
-  if (!education || !education.length) return null;
+import React from 'react';
+import EducationCard, { Education } from '@/components/cards/EducationCard';
+import { FiBook } from 'react-icons/fi';
+
+interface EducationSectionProps {
+  education: Education[];
+}
+
+export default function EducationSection({ education }: EducationSectionProps) {
+  if (!education || education.length === 0) return null;
 
   return (
-    <section id="education" className="relative border-t border-slate-200 dark:border-slate-800 px-6 py-20 sm:px-8 sm:py-24 overflow-hidden">
-      
-      {/* Background Glow */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <div className="absolute -top-20 -left-20 w-96 h-96 rounded-full bg-gradient-to-br from-rose-500 to-red-600 blur-3xl"></div>
+    <section id="education" className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-7">
+      {/* Section Header */}
+      <div className="text-center space-y-3 max-w-2xl mx-auto">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold bg-red-100/80 dark:bg-red-950/40 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-900/40">
+          <FiBook className="h-3.5 w-3.5 text-red-600 dark:text-red-400" />
+          <span>Academic Foundation</span>
+        </div>
+        <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          Education & <span className="text-gradient-red">Qualifications</span>
+        </h2>
+        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
+          Academic degrees, university credentials, and computer science foundations.
+        </p>
       </div>
 
-      <div className="relative mx-auto max-w-6xl">
-        <div className="mb-12">
-          <span className="text-sm font-semibold uppercase tracking-widest text-rose-500">
-            Learning & Growth
-          </span>
-
-          <h2 className="text-4xl font-bold text-white mt-2">
-            Education
-          </h2>
-
-          <p className="mt-4 text-lg text-slate-400">
-            My academic qualifications and achievements.
-          </p>
-        </div>
-
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
-          {education.map((edu: any) => (
-            <EducationCard
-              key={edu._id}
-              education={edu}
-              isAdmin={isAdmin}
-              onEdit={onEdit}
-              onDelete={onDelete}
-            />
-          ))}
-        </div>
+      {/* Centered cards layout: 2 to 3 cards in a row, always centered */}
+      <div className="flex flex-wrap justify-center items-stretch gap-6 max-w-6xl mx-auto">
+        {education.map((edu) => (
+          <div
+            key={edu._id}
+            className="flex flex-col w-full sm:basis-[320px] lg:basis-[300px] xl:basis-[340px] max-w-[460px] flex-grow min-w-0"
+          >
+            <EducationCard education={edu} />
+          </div>
+        ))}
       </div>
     </section>
   );
