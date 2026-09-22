@@ -51,13 +51,13 @@ export default function Home() {
       try {
         setLoading(true);
         const [projectRes, eduRes, expRes, skillRes, certRes, infoRes, profileRes] = await Promise.allSettled([
-          fetch('/api/projects'),
-          fetch('/api/education'),
-          fetch('/api/experience'),
-          fetch('/api/skills'),
-          fetch('/api/certifications'),
-          fetch('/api/portfolio-info'),
-          fetch('/api/profile'),
+          fetch('/api/projects', { cache: 'no-store' }),
+          fetch('/api/education', { cache: 'no-store' }),
+          fetch('/api/experience', { cache: 'no-store' }),
+          fetch('/api/skills', { cache: 'no-store' }),
+          fetch('/api/certifications', { cache: 'no-store' }),
+          fetch('/api/portfolio-info', { cache: 'no-store' }),
+          fetch('/api/profile', { cache: 'no-store' }),
         ]);
 
         if (projectRes.status === 'fulfilled' && projectRes.value.ok) {
@@ -92,7 +92,12 @@ export default function Home() {
 
         if (profileRes.status === 'fulfilled' && profileRes.value.ok) {
           const profileData = await profileRes.value.json();
-          if (profileData.data) setProfile(profileData.data);
+          if (profileData.data) {
+            setProfile(profileData.data);
+            if (profileData.data.email) {
+              setAdminEmail(profileData.data.email);
+            }
+          }
         }
       } catch (error) {
         console.warn('Using default portfolio data:', error);
@@ -114,7 +119,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#09090b] text-slate-900 dark:text-slate-100 transition-colors duration-200">
-      <Header />
+      <Header name={profile?.name} role={profile?.roles?.[0]} />
       <SidebarLayout
         hasProjects={projects.length > 0}
         hasSkills={skills.length > 0}

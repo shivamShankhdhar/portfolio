@@ -1,5 +1,9 @@
+import { NextResponse } from 'next/server';
 import connectDB, { isDbConfigured } from '@/lib/db';
 import Profile from '@/models/Profile';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 const defaultProfile = {
   name: 'Shivam Shankhdhar',
@@ -12,28 +16,32 @@ const defaultProfile = {
     'MERN Stack Architect',
     'Next.js & TypeScript Developer',
   ],
-  linkedinUrl: 'https://linkedin.com/in/shivam-shankhdhar',
+  linkedinUrl: 'https://www.linkedin.com/in/shivam-shankhdhar',
   githubUrl: 'https://github.com/shivamShankhdhar',
-  email: 's.shankhdhar1981@gmail.com',
+  email: 'er.shivam1214@gmail.com',
 };
 
 export async function GET() {
+  const headers = {
+    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+  };
+
   try {
     if (!isDbConfigured()) {
-      return Response.json({
+      return NextResponse.json({
         success: true,
         data: defaultProfile,
-      });
+      }, { headers });
     }
 
     await connectDB();
     const profile: any = await Profile.findOne().lean();
 
     if (!profile) {
-      return Response.json({
+      return NextResponse.json({
         success: true,
         data: defaultProfile,
-      });
+      }, { headers });
     }
 
     // Ensure linkedinUrl is not empty or pointing to an obsolete handle
@@ -41,15 +49,15 @@ export async function GET() {
       profile.linkedinUrl = 'https://www.linkedin.com/in/shivam-shankhdhar';
     }
 
-    return Response.json({
+    return NextResponse.json({
       success: true,
       data: profile,
-    });
+    }, { headers });
   } catch (error: any) {
-    return Response.json({
+    return NextResponse.json({
       success: true,
       data: defaultProfile,
-    });
+    }, { headers });
   }
 }
 

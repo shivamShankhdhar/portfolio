@@ -25,6 +25,7 @@ interface HeroSectionProps {
     available?: boolean;
     linkedinUrl?: string;
     githubUrl?: string;
+    email?: string;
   };
   adminEmail: string;
   loading?: boolean;
@@ -45,18 +46,21 @@ export default function HeroSection({ profile, adminEmail, loading = false }: He
     'Next.js & TypeScript Engineer',
   ];
 
+  const primaryRole = profile?.roles && profile.roles.length > 0 ? profile.roles[0] : 'Full Stack & Mobile Engineer';
+  const nameToDisplay = profile?.name || 'Shivam Shankhdhar';
+
   const codeSnippet = `package com.shivam.portfolio;
 
 @Service
-public class ShivamEngineer {
+public class EngineerProfileService {
 
     public EngineerProfile getProfile() {
         return EngineerProfile.builder()
-            .name("${profile?.name || 'Shivam Shankhdhar'}")
-            .role("Full Stack & Mobile Engineer")
+            .name("${nameToDisplay}")
+            .role("${primaryRole}")
             .mobile("React Native & Expo")
             .backend("Java • Spring Boot • Microservices")
-            .status("🟢 Open to Full-time Roles & Contracts")
+            .status("${profile?.available !== false ? '🟢 Open to Roles & Contracts' : '🟡 Currently Engaged'}")
             .build();
     }
 }`;
@@ -98,10 +102,14 @@ const techStack = {
               className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-900/50 shadow-xs hover:border-red-500/60 transition-all"
             >
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${profile?.available !== false ? 'bg-emerald-400' : 'bg-amber-400'} opacity-75`} />
+                <span className={`relative inline-flex rounded-full h-2 w-2 ${profile?.available !== false ? 'bg-emerald-500' : 'bg-amber-500'}`} />
               </span>
-              <span>Available for Full-time Roles & Contracts</span>
+              <span>
+                {profile?.available !== false
+                  ? 'Available for Full-time Roles & Contracts'
+                  : 'Currently Engaged • Open to Inquiries'}
+              </span>
             </motion.a>
 
             {/* Name Hierarchy */}
@@ -125,10 +133,10 @@ const techStack = {
               />
             </div>
 
-            {/* Concise Handwritten Summary */}
-            <div className="border-l-2 border-red-500/50 dark:border-red-500/60 pl-4 py-1 max-w-lg mx-auto lg:mx-0 text-left">
-              <p className="font-handwriting text-xl sm:text-2xl text-slate-700 dark:text-slate-200 leading-snug">
-                "Architecting high-performance mobile apps & scalable enterprise microservices from zero to live production."
+            {/* Live Database Summary / Bio */}
+            <div className="border-l-2 border-red-500/50 dark:border-red-500/60 pl-4 py-1 max-w-xl mx-auto lg:mx-0 text-left">
+              <p className="text-base sm:text-lg text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+                {profile?.bio || 'Java Full Stack & React Native Developer building fast, scalable, and user-centric applications. From robust backend APIs with Spring Boot to seamless web and mobile experiences with React & React Native — I turn ideas into production-ready products.'}
               </p>
             </div>
 
@@ -152,28 +160,35 @@ const techStack = {
 
               {/* Social Icons Inline */}
               <div className="flex items-center gap-2 pl-2">
+                {profile?.githubUrl && (
+                  <a
+                    href={profile.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2.5 rounded-xl border border-slate-200/80 dark:border-red-950/40 bg-white dark:bg-[#121218] text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:border-red-500/50 transition-all"
+                    aria-label="GitHub"
+                    title="GitHub Profile"
+                  >
+                    <FiGithub className="h-4 w-4" />
+                  </a>
+                )}
+                {profile?.linkedinUrl && (
+                  <a
+                    href={profile.linkedinUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2.5 rounded-xl border border-slate-200/80 dark:border-red-950/40 bg-white dark:bg-[#121218] text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:border-red-500/50 transition-all"
+                    aria-label="LinkedIn"
+                    title="LinkedIn Profile"
+                  >
+                    <FiLinkedin className="h-4 w-4" />
+                  </a>
+                )}
                 <a
-                  href={profile?.githubUrl || 'https://github.com/shivamShankhdhar'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2.5 rounded-xl border border-slate-200/80 dark:border-red-950/40 bg-white dark:bg-[#121218] text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:border-red-500/50 transition-all"
-                  aria-label="GitHub"
-                >
-                  <FiGithub className="h-4 w-4" />
-                </a>
-                <a
-                  href={profile?.linkedinUrl || 'https://www.linkedin.com/in/shivam-shankhdhar'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2.5 rounded-xl border border-slate-200/80 dark:border-red-950/40 bg-white dark:bg-[#121218] text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:border-red-500/50 transition-all"
-                  aria-label="LinkedIn"
-                >
-                  <FiLinkedin className="h-4 w-4" />
-                </a>
-                <a
-                  href={`mailto:${adminEmail || 's.shankhdhar1981@gmail.com'}`}
+                  href={`mailto:${profile?.email || adminEmail || 'er.shivam1214@gmail.com'}`}
                   className="p-2.5 rounded-xl border border-slate-200/80 dark:border-red-950/40 bg-white dark:bg-[#121218] text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:border-red-500/50 transition-all"
                   aria-label="Email"
+                  title="Send Email"
                 >
                   <FiMail className="h-4 w-4" />
                 </a>

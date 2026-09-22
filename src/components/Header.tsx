@@ -6,11 +6,20 @@ import { FiMenu, FiX, FiSun, FiMoon, FiSend } from 'react-icons/fi';
 import { useTheme } from '@/context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function Header() {
+interface HeaderProps {
+  name?: string;
+  role?: string;
+}
+
+export default function Header({ name = 'Shivam Shankhdhar', role = 'Full Stack & Mobile Engineer' }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+
+  const nameParts = (name || 'Shivam Shankhdhar').trim().split(' ');
+  const firstName = nameParts[0] || 'Shivam';
+  const lastName = nameParts.slice(1).join(' ') || 'Shankhdhar';
 
   useEffect(() => {
     setMounted(true);
@@ -60,10 +69,10 @@ export default function Header() {
             </motion.div>
             <div>
               <p className="text-base font-bold tracking-tight text-slate-900 dark:text-white transition-colors">
-                Shivam <span className="text-red-600 dark:text-red-500">Shankhdhar</span>
+                {firstName} <span className="text-red-600 dark:text-red-500">{lastName}</span>
               </p>
               <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                Full Stack & Mobile Engineer
+                {role}
               </p>
             </div>
           </Link>
