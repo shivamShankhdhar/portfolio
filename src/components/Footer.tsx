@@ -11,7 +11,6 @@ import {
   FiFileText,
   FiUser,
   FiSmartphone,
-  FiExternalLink,
   FiCheckCircle,
 } from 'react-icons/fi';
 import { motion } from 'framer-motion';
@@ -191,7 +190,7 @@ export default function Footer({
           {/* Legal & Compliance Column */}
           <div className="lg:col-span-3 space-y-3">
             <p className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-              Legal & AdSense Compliance
+              Legal & Policies
             </p>
             <ul className="space-y-2 text-xs sm:text-sm">
               <li>
@@ -211,17 +210,6 @@ export default function Footer({
                   <FiFileText className="h-3.5 w-3.5 text-red-500" />
                   <span>Terms of Service</span>
                 </Link>
-              </li>
-              <li>
-                <a
-                  href="https://adssettings.google.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition inline-flex items-center gap-1 text-xs"
-                >
-                  <span>Google Ad Settings</span>
-                  <FiExternalLink className="h-3 w-3" />
-                </a>
               </li>
             </ul>
 
