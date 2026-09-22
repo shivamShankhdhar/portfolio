@@ -32,11 +32,11 @@ export default function Header({ name = 'Shivam Shankhdhar', role = 'Full Stack 
   }, []);
 
   const navLinks = [
-    { href: '#projects', label: 'Projects' },
-    { href: '#skills', label: 'Skills' },
-    { href: '#experience', label: 'Experience' },
-    { href: '#education', label: 'Education' },
-    { href: '#contact', label: 'Contact' },
+    { href: '/about', label: 'About' },
+    { href: '/#projects', label: 'Projects' },
+    { href: '/#skills', label: 'Skills' },
+    { href: '/#experience', label: 'Experience' },
+    { href: '/contact', label: 'Contact' },
   ];
 
   return (
@@ -111,15 +111,15 @@ export default function Header({ name = 'Shivam Shankhdhar', role = 'Full Stack 
             )}
 
             {/* Hire / Contact CTA */}
-            <motion.a
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              href="#contact"
-              className="hidden md:inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white shadow-sm shadow-red-600/20 hover:shadow-md hover:shadow-red-600/35 transition-all duration-200"
-            >
-              <FiSend className="h-3.5 w-3.5" />
-              <span>Hire Me</span>
-            </motion.a>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+              <Link
+                href="/contact"
+                className="hidden md:inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white shadow-sm shadow-red-600/20 hover:shadow-md hover:shadow-red-600/35 transition-all duration-200"
+              >
+                <FiSend className="h-3.5 w-3.5" />
+                <span>Hire Me</span>
+              </Link>
+            </motion.div>
 
             {/* Mobile Hamburger Menu */}
             <button
@@ -154,14 +154,14 @@ export default function Header({ name = 'Shivam Shankhdhar', role = 'Full Stack 
               </Link>
             ))}
             <div className="pt-2 flex items-center justify-end border-t border-slate-200/60 dark:border-red-900/30 px-3">
-              <a
-                href="#contact"
+              <Link
+                href="/contact"
                 onClick={() => setIsOpen(false)}
                 className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-600 text-white shadow-sm"
               >
                 <FiSend className="h-3 w-3" />
                 <span>Contact</span>
-              </a>
+              </Link>
             </div>
           </motion.div>
         )}

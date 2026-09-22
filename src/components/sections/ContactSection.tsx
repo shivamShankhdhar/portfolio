@@ -17,6 +17,7 @@ import {
 } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import Footer from '@/components/Footer';
 
 interface ContactSectionProps {
   adminEmail: string;
@@ -389,22 +390,12 @@ export default function ContactSection({ adminEmail, profile }: ContactSectionPr
 
       </div>
 
-      {/* Footer & Back to Top */}
-      <footer className="mt-20 pt-8 border-t border-slate-200/80 dark:border-red-950/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
-        <p>
-          &copy; {new Date().getFullYear()} Shivam Shankhdhar • Full Stack & Mobile Engineer.
-        </p>
-
-        <motion.button
-          whileHover={{ y: -2 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={scrollToTop}
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-red-950/40 bg-white/80 dark:bg-[#121218] hover:text-red-600 dark:hover:text-red-400 hover:border-red-500/50 transition shadow-xs cursor-pointer"
-        >
-          <span>Back to Top</span>
-          <FiArrowUp className="h-3.5 w-3.5 text-red-500" />
-        </motion.button>
-      </footer>
+      {/* Comprehensive Site Footer */}
+      <Footer
+        adminEmail={adminEmail}
+        githubUrl={profile?.githubUrl}
+        linkedinUrl={profile?.linkedinUrl}
+      />
     </section>
   );
 }
