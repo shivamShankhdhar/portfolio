@@ -44,11 +44,6 @@ export async function GET() {
       }, { headers });
     }
 
-    // Ensure linkedinUrl is not empty or pointing to an obsolete handle
-    if (!profile.linkedinUrl || profile.linkedinUrl.includes('er-shivam-shankhdhar-930799141')) {
-      profile.linkedinUrl = 'https://www.linkedin.com/in/shivam-shankhdhar';
-    }
-
     return NextResponse.json({
       success: true,
       data: profile,

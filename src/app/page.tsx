@@ -36,10 +36,11 @@ export default function Home() {
       'MERN Stack Architect',
       'Next.js & TypeScript Developer',
     ],
-    linkedinUrl: 'https://www.linkedin.com/in/shivam-shankhdhar',
-    githubUrl: 'https://github.com/shivamShankhdhar',
+    linkedinUrl: '',
+    githubUrl: '',
+    email: '',
   });
-  const [adminEmail, setAdminEmail] = useState<string>('s.shankhdhar1981@gmail.com');
+  const [adminEmail, setAdminEmail] = useState<string>('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
