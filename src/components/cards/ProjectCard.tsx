@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import {
   FiGithub,
   FiSmartphone,
@@ -148,17 +149,25 @@ export default function ProjectCard({
         {/* Action Buttons & Admin Controls */}
         <div className="flex items-center justify-between gap-2 pt-1">
           <div className="flex items-center gap-2">
-            {project.link && (
+            {project.link ? (
               <a
                 href={project.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-semibold shadow-xs hover:shadow-sm hover:shadow-red-600/30 transition-all"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-semibold shadow-xs hover:shadow-sm hover:shadow-red-600/30 transition-all cursor-pointer"
               >
                 <span>Live Demo</span>
                 <FiArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </a>
-            )}
+            ) : isGame ? (
+              <Link
+                href="/mobile-apps/games"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-semibold shadow-xs hover:shadow-sm hover:shadow-red-600/30 transition-all cursor-pointer"
+              >
+                <FaGamepad className="h-3.5 w-3.5" />
+                <span>Game Details</span>
+              </Link>
+            ) : null}
 
             {project.github && (
               <a

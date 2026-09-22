@@ -19,14 +19,17 @@ import {
   FiMoon,
   FiTrash2,
 } from 'react-icons/fi';
+import { FaGamepad } from 'react-icons/fa6';
 import { useTheme } from '@/context/ThemeContext';
 import ProfileForm from '@/components/admin/forms/ProfileForm';
 import ProjectForm from '@/components/admin/forms/ProjectForm';
+import AppForm from '@/components/admin/forms/AppForm';
 import EducationForm from '@/components/admin/forms/EducationForm';
 import ExperienceForm from '@/components/admin/forms/ExperienceForm';
 import SkillForm from '@/components/SkillForm';
 import CertificationForm from '@/components/admin/forms/CertificationForm';
 import ProjectCard, { Project } from '@/components/cards/ProjectCard';
+import AppAdminCard, { AppItem } from '@/components/cards/AppAdminCard';
 import EducationCard, { Education } from '@/components/cards/EducationCard';
 import ExperienceCard, { Experience } from '@/components/cards/ExperienceCard';
 import SkillCard, { Skill } from '@/components/SkillCard';
@@ -39,7 +42,7 @@ import {
   EducationCardSkeleton,
 } from '@/components/ui/Skeleton';
 
-type Tab = 'profile' | 'projects' | 'skills' | 'experience' | 'education' | 'certifications' | 'messages';
+type Tab = 'profile' | 'projects' | 'apps' | 'skills' | 'experience' | 'education' | 'certifications' | 'messages';
 
 interface ContactMessage {
   _id: string;
@@ -58,6 +61,8 @@ export default function AdminDashboard() {
 
   // Data states
   const [projects, setProjects] = useState<Project[]>([]);
+  const [apps, setApps] = useState<AppItem[]>([]);
+  const [appCategoryFilter, setAppCategoryFilter] = useState<string>('All');
   const [skills, setSkills] = useState<Skill[]>([]);
   const [experience, setExperience] = useState<Experience[]>([]);
   const [education, setEducation] = useState<Education[]>([]);
@@ -99,8 +104,9 @@ export default function AdminDashboard() {
       setLoading(true);
       await checkDbStatus();
 
-      const [pRes, sRes, expRes, eduRes, certRes, msgRes] = await Promise.allSettled([
+      const [pRes, aRes, sRes, expRes, eduRes, certRes, msgRes] = await Promise.allSettled([
         fetch('/api/projects'),
+        fetch('/api/apps'),
         fetch('/api/skills'),
         fetch('/api/experience'),
         fetch('/api/education'),
@@ -109,6 +115,7 @@ export default function AdminDashboard() {
       ]);
 
       if (pRes.status === 'fulfilled' && pRes.value.ok) setProjects(await pRes.value.json());
+      if (aRes.status === 'fulfilled' && aRes.value.ok) setApps(await aRes.value.json());
       if (sRes.status === 'fulfilled' && sRes.value.ok) setSkills(await sRes.value.json());
       if (expRes.status === 'fulfilled' && expRes.value.ok) setExperience(await expRes.value.json());
       if (eduRes.status === 'fulfilled' && eduRes.value.ok) setEducation(await eduRes.value.json());
@@ -196,6 +203,7 @@ export default function AdminDashboard() {
   const tabs = [
     { id: 'profile', label: 'Profile', icon: FiUser },
     { id: 'projects', label: 'Projects', icon: FiCode, count: projects.length },
+    { id: 'apps', label: 'Mobile Apps & Games', icon: FaGamepad, count: apps.length },
     { id: 'skills', label: 'Skills', icon: FiAward, count: skills.length },
     { id: 'experience', label: 'Experience', icon: FiBriefcase, count: experience.length },
     { id: 'education', label: 'Education', icon: FiBook, count: education.length },
@@ -380,7 +388,146 @@ export default function AdminDashboard() {
             </div>
           )}
 
-          {/* 3. Skills Tab */}
+          {/* 3. Mobile Apps & Games Tab */}
+          {activeTab === 'apps' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2.5">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                      Mobile Apps &amp; Games
+                    </h3>
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-500/15 text-red-500 border border-red-500/30">
+                      {apps.length} Total
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Manage production Android apps. Titles categorized as <strong className="text-red-500">&quot;Games&quot;</strong> automatically stream to the public Games Showcase (<Link href="/mobile-apps/games" target="_blank" className="underline hover:text-red-400">/mobile-apps/games</Link>).
+                  </p>
+                </div>
+
+                {!isAddingNew && !editingItem && (
+                  <div className="flex items-center gap-2 shrink-0">
+                    <Link
+                      href="/mobile-apps/games"
+                      target="_blank"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-white/10 hover:border-red-500/40 text-slate-700 dark:text-slate-300 transition"
+                    >
+                      <FaGamepad className="h-3.5 w-3.5 text-red-500" />
+                      <span>View Games Hub</span>
+                      <FiExternalLink className="h-3 w-3" />
+                    </Link>
+
+                    <button
+                      onClick={() => setIsAddingNew(true)}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-md transition cursor-pointer"
+                    >
+                      <FiPlus className="h-4 w-4" />
+                      <span>Add New App</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Category Filter Pills */}
+              {!isAddingNew && !editingItem && (
+                <div className="flex flex-wrap items-center gap-2 pt-1 border-b border-slate-200/80 dark:border-white/5 pb-3">
+                  {['All', 'Games', 'Productivity', 'Utilities', 'Other'].map((cat) => {
+                    const count =
+                      cat === 'All'
+                        ? apps.length
+                        : apps.filter((a) => (a.category || '').toLowerCase() === cat.toLowerCase()).length;
+                    const isSelected = appCategoryFilter === cat;
+
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => setAppCategoryFilter(cat)}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-red-600 text-white shadow-xs'
+                            : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-white/10'
+                        }`}
+                      >
+                        <span>{cat}</span>
+                        <span
+                          className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                            isSelected ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-white/10 text-slate-500'
+                          }`}
+                        >
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Form or List View */}
+              {isAddingNew || editingItem ? (
+                <AppForm
+                  initialData={editingItem}
+                  onSubmit={(data) => handleSaveItem('apps', data)}
+                  onCancel={() => {
+                    setIsAddingNew(false);
+                    setEditingItem(null);
+                  }}
+                />
+              ) : loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[1, 2, 3].map((i) => (
+                    <ProjectCardSkeleton key={i} />
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {(() => {
+                    const filtered =
+                      appCategoryFilter === 'All'
+                        ? apps
+                        : apps.filter(
+                            (a) =>
+                              (a.category || '').toLowerCase() ===
+                              appCategoryFilter.toLowerCase()
+                          );
+
+                    if (filtered.length === 0) {
+                      return (
+                        <div className="text-center py-12 rounded-2xl border border-dashed border-slate-200 dark:border-white/10 p-8 space-y-3">
+                          <FaGamepad className="h-10 w-10 text-slate-400 mx-auto" />
+                          <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                            No apps found in category &quot;{appCategoryFilter}&quot;
+                          </p>
+                          <button
+                            onClick={() => setIsAddingNew(true)}
+                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600 text-white text-xs font-bold shadow-md hover:bg-red-500 transition cursor-pointer"
+                          >
+                            <FiPlus className="h-4 w-4" />
+                            <span>Add First App</span>
+                          </button>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {filtered.map((app) => (
+                          <AppAdminCard
+                            key={app._id}
+                            app={app}
+                            onEdit={(a) => setEditingItem(a)}
+                            onDelete={(id) => handleDeleteItem('apps', id)}
+                          />
+                        ))}
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 4. Skills Tab */}
           {activeTab === 'skills' && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
