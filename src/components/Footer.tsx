@@ -161,10 +161,19 @@ export default function Footer({
             <ul className="space-y-2 text-xs sm:text-sm">
               <li>
                 <Link
-                  href="/mobile-apps/games"
+                  href="/mobile-apps"
                   className="text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition inline-flex items-center gap-1.5"
                 >
                   <FiSmartphone className="h-3.5 w-3.5 text-red-500" />
+                  <span>Mobile Apps Hub</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/mobile-apps/games"
+                  className="text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition inline-flex items-center gap-1.5"
+                >
+                  <span className="text-xs">🎮</span>
                   <span>Games Showcase</span>
                 </Link>
               </li>

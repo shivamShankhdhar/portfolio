@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import TypingAnimation from '@/components/TypingAnimation';
 import {
   FiArrowDown,
@@ -10,6 +11,7 @@ import {
   FiMail,
   FiCopy,
   FiCheck,
+  FiSmartphone,
 } from 'react-icons/fi';
 import { FaJava, FaGamepad } from 'react-icons/fa6';
 import { SiReact } from 'react-icons/si';
@@ -149,6 +151,14 @@ const techStack = {
                 <span>View Projects</span>
                 <FiArrowDown className="h-4 w-4" />
               </a>
+
+              <Link
+                href="/mobile-apps"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-red-500/30 hover:border-red-500 bg-red-50/70 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 shadow-xs"
+              >
+                <FiSmartphone className="h-4 w-4" />
+                <span>Mobile Apps</span>
+              </Link>
 
               <a
                 href="#contact"

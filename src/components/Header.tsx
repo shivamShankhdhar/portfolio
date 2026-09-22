@@ -33,6 +33,7 @@ export default function Header({ name = 'Shivam Shankhdhar', role = 'Full Stack 
 
   const navLinks = [
     { href: '/#projects', label: 'Projects' },
+    { href: '/mobile-apps', label: 'Mobile Apps' },
     { href: '/#skills', label: 'Skills' },
     { href: '/#experience', label: 'Experience' },
     { href: '/#education', label: 'Education' },

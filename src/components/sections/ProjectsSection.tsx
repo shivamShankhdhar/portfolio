@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
 import ProjectCard, { Project } from '@/components/cards/ProjectCard';
 import { ProjectCardSkeleton } from '@/components/ui/Skeleton';
 import { FiGrid, FiSmartphone, FiGlobe, FiServer } from 'react-icons/fi';
@@ -111,6 +112,18 @@ export default function ProjectsSection({ projects, loading = false }: ProjectsS
             </button>
           );
         })}
+      </div>
+
+      {/* Mobile Apps Hub Callout Link */}
+      <div className="flex items-center justify-center pt-1">
+        <Link
+          href="/mobile-apps"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl text-xs sm:text-sm font-semibold bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/25 transition-all shadow-xs hover:border-red-500/50 group"
+        >
+          <FiSmartphone className="h-3.5 w-3.5 group-hover:scale-110 transition-transform" />
+          <span>Explore All Published Mobile Apps & Games in the Hub</span>
+          <span className="font-bold group-hover:translate-x-0.5 transition-transform">→</span>
+        </Link>
       </div>
 
       {/* Projects Grid or Skeletons */}
