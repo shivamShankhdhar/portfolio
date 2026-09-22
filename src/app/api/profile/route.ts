@@ -81,7 +81,12 @@ export async function POST(request: Request) {
     await profile.save();
     return Response.json({ success: true, data: profile }, { status: 201 });
   } catch (error: any) {
-    return Response.json({ success: false, error: error.message }, { status: 500 });
+    console.error('[Profile API] POST error:', error);
+    let errorMessage = error.message || 'Failed to save profile';
+    if (errorMessage.includes('bad auth')) {
+      errorMessage = 'Database authentication failed ("bad auth"). Please check the MONGO_URI username and password in your production environment variables (e.g. Vercel dashboard) and MongoDB Atlas Database Access settings.';
+    }
+    return Response.json({ success: false, error: errorMessage }, { status: 500 });
   }
 }
 
@@ -107,6 +112,11 @@ export async function PUT(request: Request) {
 
     return Response.json({ success: true, data: profile }, { status: 200 });
   } catch (error: any) {
-    return Response.json({ success: false, error: error.message }, { status: 500 });
+    console.error('[Profile API] PUT error:', error);
+    let errorMessage = error.message || 'Failed to update profile';
+    if (errorMessage.includes('bad auth')) {
+      errorMessage = 'Database authentication failed ("bad auth"). Please check the MONGO_URI username and password in your production environment variables (e.g. Vercel dashboard) and MongoDB Atlas Database Access settings.';
+    }
+    return Response.json({ success: false, error: errorMessage }, { status: 500 });
   }
 }
