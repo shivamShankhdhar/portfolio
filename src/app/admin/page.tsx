@@ -31,6 +31,13 @@ import EducationCard, { Education } from '@/components/cards/EducationCard';
 import ExperienceCard, { Experience } from '@/components/cards/ExperienceCard';
 import SkillCard, { Skill } from '@/components/SkillCard';
 import CertificationCard, { Certification } from '@/components/cards/CertificationCard';
+import {
+  Skeleton,
+  ProjectCardSkeleton,
+  ExperienceCardSkeleton,
+  SkillCardSkeleton,
+  EducationCardSkeleton,
+} from '@/components/ui/Skeleton';
 
 type Tab = 'profile' | 'projects' | 'skills' | 'experience' | 'education' | 'certifications' | 'messages';
 
@@ -351,6 +358,12 @@ export default function AdminDashboard() {
                     setEditingItem(null);
                   }}
                 />
+              ) : loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[1, 2, 3].map((i) => (
+                    <ProjectCardSkeleton key={i} />
+                  ))}
+                </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {projects.map((p) => (
@@ -395,6 +408,12 @@ export default function AdminDashboard() {
                     setEditingItem(null);
                   }}
                 />
+              ) : loading ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <SkillCardSkeleton key={i} />
+                  ))}
+                </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {skills.map((s) => (
@@ -439,6 +458,12 @@ export default function AdminDashboard() {
                     setEditingItem(null);
                   }}
                 />
+              ) : loading ? (
+                <div className="space-y-4">
+                  {[1, 2].map((i) => (
+                    <ExperienceCardSkeleton key={i} />
+                  ))}
+                </div>
               ) : (
                 <div className="space-y-4">
                   {experience.map((exp) => (
@@ -483,6 +508,12 @@ export default function AdminDashboard() {
                     setEditingItem(null);
                   }}
                 />
+              ) : loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {[1, 2].map((i) => (
+                    <EducationCardSkeleton key={i} />
+                  ))}
+                </div>
               ) : (
                 <div className="space-y-4">
                   {education.map((edu) => (
@@ -551,7 +582,23 @@ export default function AdminDashboard() {
                 <p className="text-xs text-slate-500">Inquiries sent directly through your portfolio contact form.</p>
               </div>
 
-              {messages.length === 0 ? (
+              {loading ? (
+                <div className="space-y-4">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="p-5 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#121217] space-y-3"
+                    >
+                      <div className="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-white/5">
+                        <Skeleton className="h-4 w-32 rounded-md" />
+                        <Skeleton className="h-4 w-20 rounded-md" />
+                      </div>
+                      <Skeleton className="h-4 w-full rounded-md" />
+                      <Skeleton className="h-4 w-3/4 rounded-md" />
+                    </div>
+                  ))}
+                </div>
+              ) : messages.length === 0 ? (
                 <div className="p-12 text-center rounded-2xl border border-dashed border-red-200 dark:border-red-900/30">
                   <FiMail className="h-8 w-8 text-slate-400 mx-auto mb-2" />
                   <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">Your inbox is empty</p>

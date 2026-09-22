@@ -2,14 +2,16 @@
 
 import React, { useState, useMemo } from 'react';
 import ProjectCard, { Project } from '@/components/cards/ProjectCard';
+import { ProjectCardSkeleton } from '@/components/ui/Skeleton';
 import { FiGrid, FiSmartphone, FiGlobe, FiServer } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ProjectsSectionProps {
   projects: Project[];
+  loading?: boolean;
 }
 
-export default function ProjectsSection({ projects }: ProjectsSectionProps) {
+export default function ProjectsSection({ projects, loading = false }: ProjectsSectionProps) {
   const [filter, setFilter] = useState<'All' | 'Mobile' | 'Web' | 'Backend'>('All');
 
   const counts = useMemo(() => {
@@ -109,8 +111,19 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
         })}
       </div>
 
-      {/* Projects Grid with AnimatePresence */}
-      {filteredProjects.length === 0 ? (
+      {/* Projects Grid or Skeletons */}
+      {loading ? (
+        <div className="flex flex-wrap justify-center items-stretch gap-6 max-w-5xl mx-auto">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="flex flex-col w-full sm:basis-[340px] lg:basis-[420px] max-w-[460px] flex-grow min-w-0"
+            >
+              <ProjectCardSkeleton />
+            </div>
+          ))}
+        </div>
+      ) : filteredProjects.length === 0 ? (
         <div className="text-center py-16 p-8 rounded-3xl border-2 border-dotted border-red-300 dark:border-red-900/40 max-w-md mx-auto">
           <p className="text-sm text-slate-500">No projects found for this category.</p>
         </div>

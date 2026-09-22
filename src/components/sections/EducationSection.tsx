@@ -2,14 +2,16 @@
 
 import React from 'react';
 import EducationCard, { Education } from '@/components/cards/EducationCard';
+import { EducationCardSkeleton } from '@/components/ui/Skeleton';
 import { FiBook } from 'react-icons/fi';
 
 interface EducationSectionProps {
   education: Education[];
+  loading?: boolean;
 }
 
-export default function EducationSection({ education }: EducationSectionProps) {
-  if (!education || education.length === 0) return null;
+export default function EducationSection({ education, loading = false }: EducationSectionProps) {
+  if (!loading && (!education || education.length === 0)) return null;
 
   return (
     <section id="education" className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-7">
@@ -27,16 +29,27 @@ export default function EducationSection({ education }: EducationSectionProps) {
         </p>
       </div>
 
-      {/* Centered cards layout: 2 to 3 cards in a row, always centered */}
+      {/* Centered cards layout: Skeletons or real cards */}
       <div className="flex flex-wrap justify-center items-stretch gap-6 max-w-6xl mx-auto">
-        {education.map((edu) => (
-          <div
-            key={edu._id}
-            className="flex flex-col w-full sm:basis-[320px] lg:basis-[300px] xl:basis-[340px] max-w-[460px] flex-grow min-w-0"
-          >
-            <EducationCard education={edu} />
-          </div>
-        ))}
+        {loading ? (
+          [1, 2].map((i) => (
+            <div
+              key={i}
+              className="flex flex-col w-full sm:basis-[320px] lg:basis-[300px] xl:basis-[340px] max-w-[460px] flex-grow min-w-0"
+            >
+              <EducationCardSkeleton />
+            </div>
+          ))
+        ) : (
+          education.map((edu) => (
+            <div
+              key={edu._id}
+              className="flex flex-col w-full sm:basis-[320px] lg:basis-[300px] xl:basis-[340px] max-w-[460px] flex-grow min-w-0"
+            >
+              <EducationCard education={edu} />
+            </div>
+          ))
+        )}
       </div>
     </section>
   );

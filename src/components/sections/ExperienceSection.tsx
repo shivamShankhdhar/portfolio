@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import ExperienceCard, { Experience } from '@/components/cards/ExperienceCard';
+import { ExperienceCardSkeleton } from '@/components/ui/Skeleton';
 import { FiBriefcase, FiLayers, FiGrid, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 
@@ -10,6 +11,7 @@ interface ExperienceSectionProps {
   onEdit?: (experience: Experience) => void;
   onDelete?: (id: string) => void;
   isAdmin?: boolean;
+  loading?: boolean;
 }
 
 export default function ExperienceSection({
@@ -17,12 +19,13 @@ export default function ExperienceSection({
   onEdit,
   onDelete,
   isAdmin = false,
+  loading = false,
 }: ExperienceSectionProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [viewMode, setViewMode] = useState<'stack' | 'grid'>('stack');
 
-  if (!experience || experience.length === 0) return null;
+  if (!loading && (!experience || experience.length === 0)) return null;
 
   const handleNextCard = () => {
     setActiveIndex((prev) => (prev + 1) % experience.length);
@@ -115,8 +118,19 @@ export default function ExperienceSection({
         )}
       </div>
 
-      {/* Mode 1: Interactive Peeped & Stacked Deck View */}
-      {viewMode === 'stack' ? (
+      {/* Loading Skeleton */}
+      {loading ? (
+        <div className="flex flex-wrap justify-center items-stretch gap-6 max-w-5xl mx-auto pt-2">
+          {[1, 2].map((i) => (
+            <div
+              key={i}
+              className="flex flex-col w-full sm:basis-[340px] lg:basis-[440px] max-w-[480px] flex-grow min-w-0"
+            >
+              <ExperienceCardSkeleton />
+            </div>
+          ))}
+        </div>
+      ) : viewMode === 'stack' ? (
         <div className="pt-2 space-y-4">
           
           {/* Peeped Deck Container (Tightly aligned to top, zero dead space) */}

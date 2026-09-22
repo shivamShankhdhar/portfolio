@@ -3,10 +3,12 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SkillCard, { Skill } from '@/components/SkillCard';
+import { SkillCardSkeleton } from '@/components/ui/Skeleton';
 import { FiLayers, FiSearch } from 'react-icons/fi';
 
 interface SkillsSectionProps {
   skills: Skill[];
+  loading?: boolean;
 }
 
 const containerVariants = {
@@ -78,7 +80,7 @@ function getSkillSortWeight(skill: Skill): number {
   return 4;
 }
 
-export default function SkillsSection({ skills }: SkillsSectionProps) {
+export default function SkillsSection({ skills, loading = false }: SkillsSectionProps) {
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Sort skills in exact order: Backend -> Frontend -> Database -> Others
@@ -161,8 +163,16 @@ export default function SkillsSection({ skills }: SkillsSectionProps) {
         </span>
       </motion.div>
 
-      {/* Unified Single Grid with Framer Motion layout & stagger animations */}
-      {filteredSkills.length === 0 ? (
+      {/* Unified Single Grid with Skeletons or Framer Motion layout */}
+      {loading ? (
+        <div className="flex flex-wrap justify-center gap-3.5 sm:gap-5 p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-red-950/40 bg-white/70 dark:bg-[#0e0e13]/70 backdrop-blur-xl shadow-lg shadow-red-950/5 relative z-10">
+          {Array.from({ length: 12 }).map((_, idx) => (
+            <div key={idx} className="w-[140px] sm:w-[160px]">
+              <SkillCardSkeleton />
+            </div>
+          ))}
+        </div>
+      ) : filteredSkills.length === 0 ? (
         <div className="text-center py-12 p-6 rounded-2xl border border-dashed border-red-200 dark:border-red-900/30">
           <p className="text-sm text-slate-500">No technology found matching &ldquo;{searchQuery}&rdquo;</p>
         </div>

@@ -15,6 +15,7 @@ import { FaJava, FaGamepad } from 'react-icons/fa6';
 import { SiReact } from 'react-icons/si';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { HeroSectionSkeleton } from '@/components/ui/Skeleton';
 
 interface HeroSectionProps {
   profile: {
@@ -26,11 +27,16 @@ interface HeroSectionProps {
     githubUrl?: string;
   };
   adminEmail: string;
+  loading?: boolean;
 }
 
-export default function HeroSection({ profile, adminEmail }: HeroSectionProps) {
+export default function HeroSection({ profile, adminEmail, loading = false }: HeroSectionProps) {
   const [codeCopied, setCodeCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<'developer' | 'stack'>('developer');
+
+  if (loading) {
+    return <HeroSectionSkeleton />;
+  }
 
   const roles = profile?.roles && profile.roles.length > 0 ? profile.roles : [
     'Full Stack Software Engineer',

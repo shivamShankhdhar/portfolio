@@ -120,11 +120,11 @@ export default function Home() {
         hasExperience={experience.length > 0}
         hasEducation={education.length > 0}
       >
-        <HeroSection profile={profile} adminEmail={adminEmail} />
-        <ProjectsSection projects={projects} />
-        <SkillsSection skills={skills} />
-        <ExperienceSection experience={experience} />
-        <EducationSection education={education} />
+        <HeroSection profile={profile} adminEmail={adminEmail} loading={loading} />
+        <ProjectsSection projects={projects} loading={loading} />
+        <SkillsSection skills={skills} loading={loading} />
+        <ExperienceSection experience={experience} loading={loading} />
+        <EducationSection education={education} loading={loading} />
         <ContactSection adminEmail={adminEmail} profile={profile} />
       </SidebarLayout>
     </div>

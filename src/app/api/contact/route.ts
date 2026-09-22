@@ -6,7 +6,7 @@ import { sendContactConfirmationEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, message } = await request.json();
+    const { name, email, message, topic } = await request.json();
 
     if (!name || !email || !message) {
       return NextResponse.json(
@@ -23,11 +23,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Format stored message to include topic if selected
+    const storedMessage = topic && !message.includes(topic)
+      ? `[Topic: ${topic}]\n\n${message}`
+      : message;
+
     // Save to Database if DB is configured
     if (isDbConfigured()) {
       try {
         await connectDB();
-        await Message.create({ name, email, message });
+        await Message.create({ name, email, message: storedMessage });
       } catch (dbErr) {
         console.warn('Could not save message to database:', dbErr);
       }
@@ -52,7 +57,8 @@ export async function POST(request: NextRequest) {
           name,
           message,
           developerEmail,
-          developerName
+          developerName,
+          topic
         );
       } catch (emailErr) {
         console.warn('Could not send confirmation email:', emailErr);
