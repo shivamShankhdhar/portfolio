@@ -100,10 +100,6 @@ export default function PrivacyPolicyPage() {
                 <FiEyeOff className="h-3.5 w-3.5 text-emerald-400" />
                 <span className="font-semibold text-white">Zero User Data Sold</span>
               </div>
-              <div className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 flex items-center gap-2">
-                <span className="text-slate-400">AdSense Publisher ID:</span>
-                <code className="text-red-400 font-mono font-semibold">{publisherId}</code>
-              </div>
             </div>
           </div>
         </div>

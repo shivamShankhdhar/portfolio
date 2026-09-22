@@ -238,10 +238,6 @@ export default function Footer({
             <p>
               &copy; {currentYear} Shivam Shankhdhar. All rights reserved.
             </p>
-            <span className="hidden sm:inline text-slate-300 dark:text-slate-700">•</span>
-            <p className="text-[11px] text-slate-400">
-              Google AdSense Publisher ID: pub-1113302487630583
-            </p>
           </div>
 
           <motion.button
