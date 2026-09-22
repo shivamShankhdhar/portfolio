@@ -162,7 +162,7 @@ const techStack = {
                   <FiGithub className="h-4 w-4" />
                 </a>
                 <a
-                  href={profile?.linkedinUrl || 'https://linkedin.com/in/shivam-shankhdhar'}
+                  href={profile?.linkedinUrl || 'https://www.linkedin.com/in/shivam-shankhdhar'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2.5 rounded-xl border border-slate-200/80 dark:border-red-950/40 bg-white dark:bg-[#121218] text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:border-red-500/50 transition-all"

@@ -27,13 +27,18 @@ export async function GET() {
     }
 
     await connectDB();
-    const profile = await Profile.findOne().lean();
+    const profile: any = await Profile.findOne().lean();
 
     if (!profile) {
       return Response.json({
         success: true,
         data: defaultProfile,
       });
+    }
+
+    // Ensure linkedinUrl is not empty or pointing to an obsolete handle
+    if (!profile.linkedinUrl || profile.linkedinUrl.includes('er-shivam-shankhdhar-930799141')) {
+      profile.linkedinUrl = 'https://www.linkedin.com/in/shivam-shankhdhar';
     }
 
     return Response.json({

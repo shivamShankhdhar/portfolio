@@ -36,7 +36,7 @@ export default function Home() {
       'MERN Stack Architect',
       'Next.js & TypeScript Developer',
     ],
-    linkedinUrl: 'https://linkedin.com/in/shivam-shankhdhar',
+    linkedinUrl: 'https://www.linkedin.com/in/shivam-shankhdhar',
     githubUrl: 'https://github.com/shivamShankhdhar',
   });
   const [adminEmail, setAdminEmail] = useState<string>('s.shankhdhar1981@gmail.com');

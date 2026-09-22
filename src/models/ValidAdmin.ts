@@ -18,6 +18,19 @@ const ValidAdminSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    otp: {
+      type: String,
+    },
+    otpExpiry: {
+      type: Date,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    lastLogin: {
+      type: Date,
+    },
     createdAt: {
       type: Date,
       default: Date.now,
