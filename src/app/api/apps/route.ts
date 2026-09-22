@@ -7,9 +7,13 @@ export async function GET(request: NextRequest) {
   try {
     const url = new URL(request.url);
     const category = url.searchParams.get('category');
+    const isAdmin = url.searchParams.get('admin') === 'true';
 
-    // If database is not configured in .env, fallback to default apps
+    // If database is not configured in .env
     if (!isDbConfigured()) {
+      if (isAdmin) {
+        return NextResponse.json([]);
+      }
       if (category) {
         const filtered = defaultApps.filter(
           (a) => a.category.toLowerCase() === category.toLowerCase()
@@ -21,6 +25,20 @@ export async function GET(request: NextRequest) {
 
     await connectDB();
 
+    // If database has 0 apps, auto-seed the real apps once so they have genuine ObjectIds
+    const totalAppsCount = await App.countDocuments();
+    if (totalAppsCount === 0) {
+      try {
+        const appsToSeed = defaultApps.map((a) => {
+          const { _id, ...rest } = a;
+          return rest;
+        });
+        await App.insertMany(appsToSeed);
+      } catch (seedErr) {
+        console.warn('Auto-seed apps warning:', seedErr);
+      }
+    }
+
     const query: any = {};
     if (category) {
       query.category = { $regex: new RegExp(`^${category}$`, 'i') };
@@ -28,8 +46,11 @@ export async function GET(request: NextRequest) {
 
     const apps = await App.find(query).sort({ order: 1, createdAt: -1 });
 
-    // Fallback if collection is empty in DB
+    // Fallback if collection is empty
     if (!apps || apps.length === 0) {
+      if (isAdmin) {
+        return NextResponse.json([]);
+      }
       if (category) {
         const filtered = defaultApps.filter(
           (a) => a.category.toLowerCase() === category.toLowerCase()
@@ -43,6 +64,10 @@ export async function GET(request: NextRequest) {
   } catch (error: any) {
     console.error('Error fetching apps:', error);
     const url = new URL(request.url);
+    const isAdmin = url.searchParams.get('admin') === 'true';
+    if (isAdmin) {
+      return NextResponse.json([]);
+    }
     const category = url.searchParams.get('category');
     if (category) {
       const filtered = defaultApps.filter(

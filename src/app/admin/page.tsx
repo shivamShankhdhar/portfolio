@@ -106,7 +106,7 @@ export default function AdminDashboard() {
 
       const [pRes, aRes, sRes, expRes, eduRes, certRes, msgRes] = await Promise.allSettled([
         fetch('/api/projects'),
-        fetch('/api/apps'),
+        fetch('/api/apps?admin=true'),
         fetch('/api/skills'),
         fetch('/api/experience'),
         fetch('/api/education'),

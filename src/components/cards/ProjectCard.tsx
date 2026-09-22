@@ -46,21 +46,13 @@ export default function ProjectCard({
   onDelete,
   isAdmin = false,
 }: ProjectCardProps) {
-  const titleLower = (project.title || '').toLowerCase();
-  const isLudo = titleLower.includes('ludo');
-  const isChess = titleLower.includes('chess');
-  const isGame = isLudo || isChess || titleLower.includes('game');
-
   const isMobile =
     project.projectType === 'Mobile' ||
-    isGame ||
-    project.technologies?.some((t) => t.toLowerCase().includes('native') || t.toLowerCase().includes('expo'));
+    project.technologies?.some((t) => /native|expo|android|ios|flutter/i.test(t));
 
   const isBackend =
     project.projectType === 'Backend' ||
-    titleLower.includes('microservices') ||
-    titleLower.includes('api') ||
-    project.technologies?.some((t) => t.toLowerCase().includes('spring') || t.toLowerCase().includes('java'));
+    project.technologies?.some((t) => /spring|java|docker|redis|postgres|backend|microservices/i.test(t));
 
   return (
     <motion.div
@@ -74,9 +66,7 @@ export default function ProjectCard({
           <div className="flex items-center gap-3">
             {/* Category Icon Badge */}
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 group-hover:scale-105 group-hover:bg-red-500/15 transition-all duration-200">
-              {isGame ? (
-                <FaGamepad className="h-5 w-5" />
-              ) : isMobile ? (
+              {isMobile ? (
                 <FiSmartphone className="h-5 w-5" />
               ) : isBackend ? (
                 <FaJava className="h-5 w-5" />
@@ -87,10 +77,10 @@ export default function ProjectCard({
 
             <div>
               <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-red-600 dark:text-red-400 block">
-                {isGame ? 'Mobile Game' : isMobile ? 'Mobile App' : isBackend ? 'Enterprise Backend' : 'Web Platform'}
+                {isMobile ? 'Mobile App' : isBackend ? 'Enterprise Backend' : 'Web Platform'}
               </span>
               <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                {isLudo ? '60 FPS Native' : isChess ? 'Grandmaster AI' : isBackend ? 'Microservices' : 'Next.js 16 SSR'}
+                {isMobile ? 'Mobile Engineering' : isBackend ? 'Enterprise Architecture' : 'Full Stack Web'}
               </span>
             </div>
           </div>
@@ -159,14 +149,6 @@ export default function ProjectCard({
                 <span>Live Demo</span>
                 <FiArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </a>
-            ) : isGame ? (
-              <Link
-                href="/mobile-apps/games"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-semibold shadow-xs hover:shadow-sm hover:shadow-red-600/30 transition-all cursor-pointer"
-              >
-                <FaGamepad className="h-3.5 w-3.5" />
-                <span>Game Details</span>
-              </Link>
             ) : null}
 
             {project.github && (

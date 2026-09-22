@@ -18,7 +18,7 @@ export default function AppForm({ onSubmit, onCancel, initialData }: AppFormProp
     category: 'Games',
     package: '',
     version: 'v1.0.0',
-    status: 'Play Store Ready',
+    status: 'Production',
     rating: '4.9',
     ratingCount: '500+ Players',
     icon: '🎮',
@@ -46,7 +46,7 @@ export default function AppForm({ onSubmit, onCancel, initialData }: AppFormProp
         category: initialData.category || 'Games',
         package: initialData.package || '',
         version: initialData.version || 'v1.0.0',
-        status: initialData.status || 'Play Store Ready',
+        status: initialData.status || 'Production',
         rating: initialData.rating || '4.9',
         ratingCount: initialData.ratingCount || '500+ Players',
         icon: initialData.icon || '🎮',
@@ -238,19 +238,38 @@ export default function AppForm({ onSubmit, onCancel, initialData }: AppFormProp
           />
         </div>
 
-        {/* Status */}
+        {/* Release Status */}
         <div>
-          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-            Status
+          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center justify-between">
+            <span>Release Status *</span>
+            <span className="text-[10px] text-amber-500 font-medium">
+              Non-production titles show as &quot;Coming Soon&quot;
+            </span>
           </label>
-          <input
-            type="text"
+          <select
             name="status"
-            value={formData.status}
+            value={
+              ['Production', 'Closed Testing', 'Internal Testing', 'Coming Soon'].includes(formData.status)
+                ? formData.status
+                : /production|published/i.test(formData.status)
+                ? 'Production'
+                : /closed/i.test(formData.status)
+                ? 'Closed Testing'
+                : /internal/i.test(formData.status)
+                ? 'Internal Testing'
+                : 'Coming Soon'
+            }
             onChange={handleChange}
-            placeholder="e.g. Published on Google Play or Play Store Ready"
-            className="w-full px-3.5 py-2 rounded-xl text-sm border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-          />
+            className="w-full px-3.5 py-2 rounded-xl text-sm border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#191a24] text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 cursor-pointer font-medium"
+          >
+            <option value="Production">🟢 Production (Live on Google Play)</option>
+            <option value="Closed Testing">🟡 Closed Testing (Coming Soon)</option>
+            <option value="Internal Testing">🔵 Internal Testing (Coming Soon)</option>
+            <option value="Coming Soon">🟣 Coming Soon (In Development)</option>
+          </select>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+            Apps not in Production will be prominently badged as <strong className="text-amber-500 font-semibold">&quot;Coming Soon&quot;</strong> in the frontend showcase.
+          </p>
         </div>
 
         {/* Icon & Banner Style */}

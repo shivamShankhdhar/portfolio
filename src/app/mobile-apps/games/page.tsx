@@ -99,7 +99,12 @@ export default async function MobileGamesPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-            {games.map((game: any) => (
+            {games.map((game: any) => {
+              const statusLower = (game.status || '').toLowerCase();
+              const isProd = statusLower.includes('production') || statusLower.includes('published');
+              const isClosedTesting = statusLower.includes('closed');
+
+              return (
               <div
                 key={game._id || game.id || game.package}
                 className="relative flex flex-col justify-between rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white/95 dark:bg-[#0f1018]/95 backdrop-blur-2xl shadow-xl shadow-red-950/5 hover:border-red-500/50 hover:shadow-2xl hover:shadow-red-600/10 transition-all duration-300 group overflow-hidden"
@@ -126,18 +131,34 @@ export default async function MobileGamesPage() {
 
                   {/* Banner Top Row */}
                   <div className="relative z-10 flex items-center justify-between gap-2">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-black/40 backdrop-blur-md text-red-400 border border-red-500/30">
-                      <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
-                      <span>{game.status || 'Play Store Ready'}</span>
-                    </span>
+                    {isProd ? (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-black/50 backdrop-blur-md text-emerald-400 border border-emerald-500/40">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span>Production • Live on Play Store</span>
+                      </span>
+                    ) : isClosedTesting ? (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-black/50 backdrop-blur-md text-amber-300 border border-amber-500/40">
+                        <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
+                        <span>Coming Soon • Closed Testing</span>
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-black/50 backdrop-blur-md text-rose-300 border border-rose-500/40">
+                        <span className="h-1.5 w-1.5 rounded-full bg-rose-400 animate-pulse" />
+                        <span>Coming Soon</span>
+                      </span>
+                    )}
 
-                    {game.rating && (
+                    {isProd && game.rating ? (
                       <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-black/40 backdrop-blur-md text-amber-300 border border-amber-500/30">
                         <FaStar className="h-3 w-3 text-amber-400 fill-current" />
                         <span>{game.rating}</span>
                         {game.ratingCount && (
                           <span className="text-slate-400 font-normal ml-0.5">({game.ratingCount})</span>
                         )}
+                      </div>
+                    ) : (
+                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-black/40 backdrop-blur-md text-amber-300 border border-amber-500/30 font-mono uppercase">
+                        <span>{isClosedTesting ? 'Early Access' : 'In Dev'}</span>
                       </div>
                     )}
                   </div>
@@ -237,7 +258,7 @@ export default async function MobileGamesPage() {
 
                   {/* Bottom Actions: Download on Google Play & Privacy Policy */}
                   <div className="pt-6 mt-4 border-t border-slate-100 dark:border-white/5 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                    {game.playStoreUrl && (
+                    {isProd && game.playStoreUrl ? (
                       <a
                         href={game.playStoreUrl}
                         target="_blank"
@@ -247,6 +268,14 @@ export default async function MobileGamesPage() {
                         <FaGooglePlay className="h-4 w-4 shrink-0" />
                         <span>Download on Google Play</span>
                       </a>
+                    ) : (
+                      <div className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-5 rounded-2xl text-xs sm:text-sm font-bold bg-gradient-to-r from-amber-600/15 via-orange-600/10 to-amber-600/15 border border-amber-500/35 text-amber-600 dark:text-amber-300 shadow-sm">
+                        <FaGooglePlay className="h-4 w-4 shrink-0 text-amber-500" />
+                        <span>Coming Soon on Google Play</span>
+                        <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-300 border border-amber-500/30 ml-1">
+                          {isClosedTesting ? 'Closed Testing' : 'Coming Soon'}
+                        </span>
+                      </div>
                     )}
 
                     {game.privacyUrl && (
@@ -261,7 +290,8 @@ export default async function MobileGamesPage() {
                   </div>
                 </div>
               </div>
-            ))}
+            );
+          })}
           </div>
         </div>
 

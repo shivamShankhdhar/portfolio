@@ -20,16 +20,17 @@ export default function ProjectsSection({ projects, loading = false }: ProjectsS
       Mobile: projects.filter(
         (p) =>
           p.projectType === 'Mobile' ||
-          p.title?.toLowerCase().includes('ludo') ||
-          p.title?.toLowerCase().includes('chess')
+          p.technologies?.some((t) => /native|expo|android|ios|flutter/i.test(t))
       ).length,
       Web: projects.filter(
-        (p) => p.projectType === 'Web' || (!p.projectType && !p.title?.toLowerCase().includes('binge'))
+        (p) =>
+          p.projectType === 'Web' ||
+          (!p.projectType && !p.technologies?.some((t) => /native|expo|android|ios/i.test(t)))
       ).length,
       Backend: projects.filter(
         (p) =>
           p.projectType === 'Backend' ||
-          p.technologies?.some((t) => t.toLowerCase().includes('spring') || t.toLowerCase().includes('java'))
+          p.technologies?.some((t) => /spring|java|docker|redis|postgres|backend|microservices/i.test(t))
       ).length,
     };
   }, [projects]);
@@ -40,20 +41,21 @@ export default function ProjectsSection({ projects, loading = false }: ProjectsS
       if (filter === 'Mobile') {
         return (
           project.projectType === 'Mobile' ||
-          project.title?.toLowerCase().includes('ludo') ||
-          project.title?.toLowerCase().includes('chess') ||
-          project.technologies?.some((t) => t.toLowerCase().includes('native') || t.toLowerCase().includes('expo'))
+          project.technologies?.some((t) => /native|expo|android|ios|flutter/i.test(t))
         );
       }
       if (filter === 'Backend') {
         return (
           project.projectType === 'Backend' ||
-          project.technologies?.some(
-            (t) => t.toLowerCase().includes('spring') || t.toLowerCase().includes('java') || t.toLowerCase().includes('docker')
+          project.technologies?.some((t) =>
+            /spring|java|docker|redis|postgres|backend|microservices/i.test(t)
           )
         );
       }
-      return project.projectType === 'Web' || (!project.projectType && !project.title?.toLowerCase().includes('binge'));
+      return (
+        project.projectType === 'Web' ||
+        (!project.projectType && !project.technologies?.some((t) => /native|expo|android|ios/i.test(t)))
+      );
     });
   }, [projects, filter]);
 

@@ -86,11 +86,46 @@ export default function AppAdminCard({ app, onEdit, onDelete }: AppAdminCardProp
             <span>{app.category}</span>
           </span>
 
-          {app.status && (
-            <span className="px-2.5 py-0.5 rounded-full font-medium bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/20 text-[11px]">
-              {app.status}
-            </span>
-          )}
+          {(() => {
+            const statusLower = (app.status || '').toLowerCase();
+            const isProd = statusLower.includes('production') || statusLower.includes('published');
+            const isClosedTesting = statusLower.includes('closed');
+            const isInternal = statusLower.includes('internal');
+
+            if (isProd) {
+              return (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[11px]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Production (Live)</span>
+                </span>
+              );
+            }
+
+            if (isClosedTesting) {
+              return (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/25 text-[11px]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                  <span>Closed Testing (Coming Soon)</span>
+                </span>
+              );
+            }
+
+            if (isInternal) {
+              return (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/25 text-[11px]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                  <span>Internal Testing (Coming Soon)</span>
+                </span>
+              );
+            }
+
+            return (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/25 text-[11px]">
+                <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
+                <span>{app.status || 'Coming Soon'}</span>
+              </span>
+            );
+          })()}
 
           {app.rating && (
             <span className="inline-flex items-center gap-1 text-amber-500 dark:text-amber-400 font-semibold text-xs ml-auto">

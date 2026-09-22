@@ -45,6 +45,7 @@ export default function GamesHeroSection({ games }: GamesHeroSectionProps) {
   const isLudo =
     currentGame.bannerType === 'ludo' ||
     (currentGame.title || '').toLowerCase().includes('ludo');
+  const isCurrentGameProd = /production|published/i.test(currentGame.status || '');
 
   const activePlayStoreUrl =
     currentGame.playStoreUrl ||
@@ -129,11 +130,15 @@ export default function GamesHeroSection({ games }: GamesHeroSectionProps) {
                 >
                   <span>{g.icon || '🎮'}</span>
                   <span>{g.title}</span>
-                  {g.version && (
+                  {!/production|published/i.test(g.status || '') ? (
+                    <span className="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      Coming Soon
+                    </span>
+                  ) : g.version ? (
                     <span className="hidden sm:inline text-[10px] opacity-80 font-mono">
                       {g.version}
                     </span>
-                  )}
+                  ) : null}
                 </button>
               );
             })}
@@ -162,16 +167,26 @@ export default function GamesHeroSection({ games }: GamesHeroSectionProps) {
 
             {/* Quick CTAs */}
             <div className="flex flex-wrap items-center gap-3 pt-1">
-              <a
-                href={activePlayStoreUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 py-3 px-5 rounded-2xl text-xs sm:text-sm font-bold bg-gradient-to-r from-red-600 via-rose-600 to-red-600 hover:from-red-500 hover:to-rose-500 text-white shadow-xl shadow-red-600/30 hover:shadow-red-600/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer"
-              >
-                <FaGooglePlay className="h-4 w-4 text-emerald-300" />
-                <span>Get {currentGame.title} on Play Store</span>
-                <FiChevronRight className="h-3.5 w-3.5" />
-              </a>
+              {isCurrentGameProd ? (
+                <a
+                  href={activePlayStoreUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2.5 py-3 px-5 rounded-2xl text-xs sm:text-sm font-bold bg-gradient-to-r from-red-600 via-rose-600 to-red-600 hover:from-red-500 hover:to-rose-500 text-white shadow-xl shadow-red-600/30 hover:shadow-red-600/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer"
+                >
+                  <FaGooglePlay className="h-4 w-4 text-emerald-300" />
+                  <span>Get {currentGame.title} on Play Store</span>
+                  <FiChevronRight className="h-3.5 w-3.5" />
+                </a>
+              ) : (
+                <div className="inline-flex items-center gap-2.5 py-3 px-5 rounded-2xl text-xs sm:text-sm font-bold bg-gradient-to-r from-amber-600/25 via-orange-600/20 to-amber-600/25 border border-amber-500/40 text-amber-200 shadow-xl shadow-amber-600/15">
+                  <FaGooglePlay className="h-4 w-4 text-amber-400 shrink-0" />
+                  <span>Coming Soon to Google Play</span>
+                  <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 ml-1">
+                    {currentGame.status || 'Closed Testing'}
+                  </span>
+                </div>
+              )}
 
               <a
                 href="#titles"
@@ -501,15 +516,24 @@ export default function GamesHeroSection({ games }: GamesHeroSectionProps) {
                   <span>Privacy Policy &amp; Safety</span>
                 </Link>
 
-                <a
-                  href={activePlayStoreUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-bold text-red-400 hover:text-red-300 transition-colors"
-                >
-                  <span>Play Store Link</span>
-                  <FiChevronRight className="h-3 w-3" />
-                </a>
+                {isCurrentGameProd ? (
+                  <a
+                    href={activePlayStoreUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 font-bold text-red-400 hover:text-red-300 transition-colors"
+                  >
+                    <span>Play Store Link</span>
+                    <FiChevronRight className="h-3 w-3" />
+                  </a>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-400">
+                    <span>Coming Soon</span>
+                    <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-[9px] uppercase border border-amber-500/30">
+                      {currentGame.status || 'Closed Beta'}
+                    </span>
+                  </span>
+                )}
               </div>
 
             </div>
