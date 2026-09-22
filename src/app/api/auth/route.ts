@@ -297,6 +297,5 @@ export async function GET() {
   return NextResponse.json({
     status: 'ok',
     dbConfigured: configured,
-    adminEmail: process.env.ADMIN_EMAIL || 's.shankhdhar1981@gmail.com',
   });
 }

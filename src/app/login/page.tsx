@@ -6,16 +6,11 @@ import Link from 'next/link';
 import { FiMail, FiKey, FiArrowLeft, FiShield, FiCheckCircle, FiRefreshCw } from 'react-icons/fi';
 import { toast } from 'sonner';
 
-const QUICK_EMAILS = [
-  'er.shivam1214@gmail.com',
-  's.shankhdhar1981@gmail.com',
-];
-
 export default function LoginPage() {
   const router = useRouter();
 
   // Admin Email & OTP state
-  const [email, setEmail] = useState('er.shivam1214@gmail.com');
+  const [email, setEmail] = useState('');
   const [otpStep, setOtpStep] = useState<'email' | 'otp'>('email');
   const [otp, setOtp] = useState('');
   const [devOtpHint, setDevOtpHint] = useState<string | null>(null);
@@ -192,32 +187,13 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-800 bg-[#161622] text-white text-sm focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-colors"
-                    placeholder="Enter registered admin email"
+                    placeholder="admin@example.com"
                     autoFocus
                   />
                 </div>
 
-                {/* Quick Select Admin Email Chips */}
-                <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                  <span className="text-[10px] uppercase font-semibold text-slate-500">Quick Select:</span>
-                  {QUICK_EMAILS.map((qEmail) => (
-                    <button
-                      key={qEmail}
-                      type="button"
-                      onClick={() => setEmail(qEmail)}
-                      className={`text-[11px] px-2 py-0.5 rounded-md transition-all font-mono ${
-                        email.toLowerCase() === qEmail.toLowerCase()
-                          ? 'bg-red-900/50 text-red-300 border border-red-700/60 font-bold'
-                          : 'bg-[#181824] text-slate-400 hover:text-slate-200 border border-slate-800'
-                      }`}
-                    >
-                      {qEmail.split('@')[0]}
-                    </button>
-                  ))}
-                </div>
-
                 <p className="mt-2 text-[11px] text-slate-400">
-                  A 6-digit verification code will be dispatched for direct login access.
+                  Enter your registered admin email address to receive a one-time verification code.
                 </p>
               </div>
 
