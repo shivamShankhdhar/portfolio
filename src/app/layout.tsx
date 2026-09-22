@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Caveat } from "next/font/google";
+import { Geist, Geist_Mono, Caveat, Bebas_Neue, Oswald } from "next/font/google";
 import Providers from "@/components/Providers";
 import "./globals.css";
 
@@ -15,6 +15,18 @@ const geistMono = Geist_Mono({
 
 const caveat = Caveat({
   variable: "--font-handwritten",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const bebasNeue = Bebas_Neue({
+  variable: "--font-bebas",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const oswald = Oswald({
+  variable: "--font-oswald",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
@@ -46,7 +58,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${caveat.variable} h-full antialiased scroll-smooth`}
+      className={`${geistSans.variable} ${geistMono.variable} ${caveat.variable} ${bebasNeue.variable} ${oswald.variable} h-full antialiased scroll-smooth`}
     >
       <head>
         <meta name="google-adsense-account" content="ca-pub-1113302487630583" />

@@ -3,13 +3,11 @@
 import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import SidebarLayout from '@/components/SidebarLayout';
-import HeroSection from '@/components/sections/HeroSection';
-import ProjectsSection from '@/components/sections/ProjectsSection';
-import SkillsSection from '@/components/sections/SkillsSection';
-import ExperienceSection from '@/components/sections/ExperienceSection';
-import EducationSection from '@/components/sections/EducationSection';
-import ContactSection from '@/components/sections/ContactSection';
-import PortfolioStickyQR from '@/components/PortfolioStickyQR';
+import HeroShowcaseSection from '@/components/sections/HeroShowcaseSection';
+import SelectedProjectsSection from '@/components/sections/SelectedProjectsSection';
+import ExperienceProcessSection from '@/components/sections/ExperienceProcessSection';
+import WorkTogetherSection from '@/components/sections/WorkTogetherSection';
+import ContactDialog from '@/components/ContactDialog';
 import {
   defaultProjects,
   defaultSkills,
@@ -25,6 +23,7 @@ export default function Home() {
   const [experience, setExperience] = useState<any[]>(defaultExperience);
   const [skills, setSkills] = useState<any[]>(defaultSkills);
   const [certifications, setCertifications] = useState<any[]>(defaultCertifications);
+  const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
   const [profile, setProfile] = useState<any>({
     name: 'Shivam Shankhdhar',
     bio: 'Passionate Full Stack & Mobile Engineer dedicated to architecting high-performance web applications, native mobile experiences (React Native / Expo), and scalable backend systems. Proven track record of shipping end-to-end products to production.',
@@ -119,22 +118,44 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#09090b] text-slate-900 dark:text-slate-100 transition-colors duration-200">
+    <div className="min-h-screen bg-[#07080b] text-slate-100 transition-colors duration-200">
       <Header name={profile?.name} role={profile?.roles?.[0]} appsUrl={profile?.appsUrl} />
       <SidebarLayout
         hasProjects={projects.length > 0}
         hasSkills={skills.length > 0}
-        hasExperience={experience.length > 0}
+        hasExperience={true}
         hasEducation={education.length > 0}
       >
-        <HeroSection profile={profile} adminEmail={adminEmail} loading={loading} />
-        <ProjectsSection projects={projects} loading={loading} />
-        <SkillsSection skills={skills} loading={loading} />
-        <ExperienceSection experience={experience} loading={loading} />
-        <EducationSection education={education} loading={loading} />
-        <ContactSection adminEmail={adminEmail} profile={profile} />
+        <HeroShowcaseSection
+          profile={profile}
+          projectsCount={projects.length}
+          loading={loading}
+          onOpenContact={() => setIsContactDialogOpen(true)}
+        />
+        <SelectedProjectsSection
+          projects={projects}
+          loading={loading}
+        />
+        <ExperienceProcessSection
+          education={education}
+          certifications={certifications}
+          skills={skills}
+          headlineQuote={profile?.headlineQuote}
+          authorName={profile?.name ? profile.name.split(' ')[0] : 'Shivam'}
+          loading={loading}
+        />
+        <WorkTogetherSection
+          profile={profile}
+          adminEmail={adminEmail}
+          onOpenContact={() => setIsContactDialogOpen(true)}
+        />
       </SidebarLayout>
-      <PortfolioStickyQR />
+
+      {/* Animated Contact Modal Dialog */}
+      <ContactDialog
+        isOpen={isContactDialogOpen}
+        onClose={() => setIsContactDialogOpen(false)}
+      />
     </div>
   );
 }

@@ -55,6 +55,36 @@ const profileSchema = new mongoose.Schema(
         'React Native Developer',
       ],
     },
+    yearsExperience: {
+      type: String,
+      trim: true,
+      default: '3+',
+    },
+    projectsCompleted: {
+      type: String,
+      trim: true,
+      default: '20+',
+    },
+    happyClients: {
+      type: String,
+      trim: true,
+      default: '100%',
+    },
+    headlineQuote: {
+      type: String,
+      trim: true,
+      default: 'Good software is not just how it looks, but how it scales and performs.',
+    },
+    location: {
+      type: String,
+      trim: true,
+      default: 'Bareilly, Uttar Pradesh, India',
+    },
+    phone: {
+      type: String,
+      trim: true,
+      default: '+91 8448967919',
+    },
   },
   { timestamps: true }
 );
