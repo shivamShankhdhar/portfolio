@@ -15,15 +15,16 @@ import {
 } from 'react-icons/fi';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy - Chess Binge | Mobile Game',
+  title: 'Privacy Policy - Ludo Binge | Mobile Game',
   description:
-    'Official Privacy Policy for Chess Binge on Google Play and Android. Learn how we handle your data, Google AdMob integration, notifications, and your privacy rights.',
+    'Official Privacy Policy for Ludo Binge on Google Play and Android. Learn how we handle your data, Google AdMob integration, offline gameplay, and your privacy rights.',
   keywords: [
-    'Chess Binge',
+    'Ludo Binge',
     'Privacy Policy',
-    'Chess Binge Privacy Policy',
+    'Ludo Binge Privacy Policy',
     'Google Play Privacy Policy',
     'Shivam Shankhdhar',
+    'Ludo Android Game',
   ],
 };
 
@@ -40,8 +41,8 @@ const sections = [
   { id: 'contact', title: '10. Contact' },
 ];
 
-export default function ChessBingePrivacyPolicyPage() {
-  const lastUpdated = 'September 19, 2026';
+export default function LudoBingePrivacyPolicyPage() {
+  const lastUpdated = 'September 22, 2026';
 
   return (
     <main className="min-h-screen bg-slate-50 dark:bg-[#09090d] text-slate-800 dark:text-slate-200 font-sans py-10 sm:py-14 px-4 sm:px-6 lg:px-8 bg-developer-grid bg-radial-gradient">
@@ -64,7 +65,7 @@ export default function ChessBingePrivacyPolicyPage() {
             <FiChevronRight className="h-3 w-3" />
             <span>Games</span>
             <FiChevronRight className="h-3 w-3" />
-            <span className="text-slate-800 dark:text-slate-200 font-semibold">Chess Binge Policy</span>
+            <span className="text-slate-800 dark:text-slate-200 font-semibold">Ludo Binge Policy</span>
           </div>
         </div>
 
@@ -80,18 +81,18 @@ export default function ChessBingePrivacyPolicyPage() {
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
-              Privacy Policy for <span className="text-gradient-red">Chess Binge</span>
+              Privacy Policy for <span className="text-gradient-red">Ludo Binge</span>
             </h1>
 
             <p className="text-slate-300 text-sm sm:text-base max-w-2xl leading-relaxed">
-              This Privacy Policy explains how <strong>Chess Binge</strong> (&ldquo;we&rdquo;, &ldquo;our&rdquo;, or &ldquo;the App&rdquo;), developed by <strong>Shivam Shankhdhar</strong>, handles, processes, and protects your information when you install and play our mobile chess game on Android.
+              This Privacy Policy explains how <strong>Ludo Binge</strong> (&ldquo;we&rdquo;, &ldquo;our&rdquo;, or &ldquo;the App&rdquo;), developed by <strong>Shivam Shankhdhar</strong>, handles, processes, and protects your information when you install and play our mobile board game on Android.
             </p>
 
             {/* App Meta Chips */}
             <div className="pt-2 flex flex-wrap gap-2 sm:gap-3 text-xs">
               <div className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 flex items-center gap-2">
                 <span className="text-slate-400">Package:</span>
-                <code className="text-red-400 font-mono font-semibold">chess.binge</code>
+                <code className="text-red-400 font-mono font-semibold">ludo.binge</code>
               </div>
               <div className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 flex items-center gap-2">
                 <span className="text-slate-400">Developer:</span>
@@ -135,7 +136,7 @@ export default function ChessBingePrivacyPolicyPage() {
               <span>1. Overview &amp; Privacy Principles</span>
             </h2>
             <p className="mb-4 text-slate-700 dark:text-slate-300 leading-relaxed">
-              Your privacy is fundamental to us. Chess Binge is engineered with a <strong>privacy-first, offline-ready architecture</strong>:
+              Your privacy is fundamental to us. Ludo Binge is engineered with a <strong>privacy-first, offline-ready architecture</strong>:
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-[#141522] border border-slate-200/80 dark:border-white/5 space-y-1.5">
@@ -144,7 +145,7 @@ export default function ChessBingePrivacyPolicyPage() {
                   <span>No Account Required</span>
                 </div>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  No sign-up, email, phone number, social login, or password required to play.
+                  No registration, email, phone number, social login, or password required to play.
                 </p>
               </div>
 
@@ -154,7 +155,7 @@ export default function ChessBingePrivacyPolicyPage() {
                   <span>Local-First Storage</span>
                 </div>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Match moves, board FEN, ELO rating, and preferences stay on your device.
+                  Match moves, pawn positions, game statistics, and sound preferences stay on your device.
                 </p>
               </div>
 
@@ -174,7 +175,7 @@ export default function ChessBingePrivacyPolicyPage() {
                   <span>Transparent Ads</span>
                 </div>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Google AdMob delivers in-game ads (rewarded hints & spins) to keep gameplay free.
+                  Google AdMob delivers in-game ads to support free and accessible gameplay.
                 </p>
               </div>
             </div>
@@ -194,16 +195,16 @@ export default function ChessBingePrivacyPolicyPage() {
               The App stores gameplay parameters in your device&apos;s sandboxed local storage:
             </p>
             <ul className="list-disc pl-6 space-y-1.5 text-slate-700 dark:text-slate-300 mb-4 text-sm">
-              <li>Current game state, FEN board strings, and pending match moves (for the &ldquo;Continue Game&rdquo; feature).</li>
-              <li>Offline match statistics, win/loss history, and ELO rating progress.</li>
-              <li>Virtual currency balance (Binge Coins) and unlocked cosmetic board/piece themes.</li>
-              <li>Local user preferences (sound effects volume, background music toggle, haptic feedback).</li>
+              <li>Current game state, pawn positions on the board, and active turn data.</li>
+              <li>Offline match statistics, win/loss counts, and game completion records.</li>
+              <li>Color selections, cosmetic tokens, and player display nicknames.</li>
+              <li>Local audio and haptic feedback preferences (music, sound effects, vibrations).</li>
             </ul>
 
             <div className="p-3.5 rounded-2xl bg-red-500/5 dark:bg-red-950/20 border border-red-500/20 text-xs sm:text-sm text-slate-700 dark:text-slate-300 flex items-start gap-2.5">
               <FiInfo className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
               <span>
-                <strong>Note:</strong> Local gameplay data never leaves your device and is not synchronized to an external central database. Clearing app data in Android settings or uninstalling the app permanently deletes this local data.
+                <strong>Note:</strong> Local gameplay data never leaves your device and is not synchronized to an external central server. Clearing app storage in Android settings or uninstalling the app permanently deletes this local data.
               </span>
             </div>
 
@@ -211,13 +212,13 @@ export default function ChessBingePrivacyPolicyPage() {
               B. Automatically Collected Technical &amp; Advertising Data
             </h3>
             <p className="mb-3 text-slate-700 dark:text-slate-300">
-              When playing Chess Binge with an active internet connection, third-party software development kits (SDKs)&mdash;primarily <strong>Google AdMob</strong>&mdash;automatically collect standard technical diagnostics and advertising metrics:
+              When playing Ludo Binge with an active internet connection, third-party software development kits (SDKs)&mdash;primarily <strong>Google AdMob</strong>&mdash;automatically collect standard technical diagnostics and advertising metrics:
             </p>
             <ul className="list-disc pl-6 space-y-1.5 text-slate-700 dark:text-slate-300 text-sm">
               <li><strong>Device Identifiers:</strong> Google Advertising ID (GAID / AAID), vendor identifiers, and hardware characteristics.</li>
               <li><strong>Technical Diagnostics:</strong> Operating system version, device model/manufacturer, screen resolution, language settings, and crash telemetry.</li>
               <li><strong>Network Information:</strong> Coarse IP address (used to determine general country or city for localized ad delivery).</li>
-              <li><strong>Ad Interaction Data:</strong> Ad views, clicks, completion of rewarded video ads (e.g. to grant free hints), and fraud prevention telemetry.</li>
+              <li><strong>Ad Interaction Data:</strong> Ad views, clicks, completion of rewarded video ads, and fraud prevention telemetry.</li>
             </ul>
           </section>
 
@@ -228,7 +229,7 @@ export default function ChessBingePrivacyPolicyPage() {
               <span>3. Third-Party Services &amp; Advertising Providers</span>
             </h2>
             <p className="mb-4 text-slate-700 dark:text-slate-300">
-              Chess Binge uses third-party services that may collect information used to identify you and display contextual or personalized advertisements:
+              Ludo Binge uses third-party services that may collect information used to identify you and display contextual or personalized advertisements:
             </p>
 
             <div className="space-y-4">
@@ -281,7 +282,7 @@ export default function ChessBingePrivacyPolicyPage() {
                   </span>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mb-3 leading-relaxed">
-                  Used for core application runtime, device feature access (audio, haptics), and local scheduled notification delivery.
+                  Used for core application runtime, gesture handling, audio playback, and haptic feedback.
                 </p>
                 <a
                   href="https://expo.dev/privacy"
@@ -300,10 +301,10 @@ export default function ChessBingePrivacyPolicyPage() {
           <section id="permissions" className="scroll-mt-20">
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-4 pb-2 border-b border-slate-200 dark:border-white/10 flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-red-600" />
-              <span>4. Device Permissions &amp; Notifications</span>
+              <span>4. Device Permissions</span>
             </h2>
             <p className="mb-4 text-slate-700 dark:text-slate-300">
-              Chess Binge requests minimal system permissions strictly necessary to deliver core features:
+              Ludo Binge requests minimal system permissions strictly necessary to deliver core features:
             </p>
 
             <div className="border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-xs">
@@ -319,20 +320,9 @@ export default function ChessBingePrivacyPolicyPage() {
                   <tbody className="divide-y divide-slate-100 dark:divide-white/5 text-slate-700 dark:text-slate-300">
                     <tr>
                       <td className="py-3 px-4 font-mono font-semibold text-red-600 dark:text-red-400 text-xs">
-                        POST_NOTIFICATIONS
-                      </td>
-                      <td className="py-3 px-4">Local daily reminders (1 PM, 6 PM, 8 PM) and welcome tips.</td>
-                      <td className="py-3 px-4">
-                        <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400">
-                          Optional (Opt-in)
-                        </span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 px-4 font-mono font-semibold text-red-600 dark:text-red-400 text-xs">
                         INTERNET &amp; NETWORK_STATE
                       </td>
-                      <td className="py-3 px-4">Retrieves Google AdMob ads and checks connectivity.</td>
+                      <td className="py-3 px-4">Retrieves Google AdMob advertisements and checks connectivity.</td>
                       <td className="py-3 px-4">
                         <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
                           Required for Ads
@@ -343,18 +333,7 @@ export default function ChessBingePrivacyPolicyPage() {
                       <td className="py-3 px-4 font-mono font-semibold text-red-600 dark:text-red-400 text-xs">
                         VIBRATE
                       </td>
-                      <td className="py-3 px-4">Provides tactile haptic feedback on piece moves and checkmate.</td>
-                      <td className="py-3 px-4">
-                        <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400">
-                          Optional
-                        </span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="py-3 px-4 font-mono font-semibold text-red-600 dark:text-red-400 text-xs">
-                        SCHEDULE_EXACT_ALARM
-                      </td>
-                      <td className="py-3 px-4">Triggers local notifications at exact scheduled daily times.</td>
+                      <td className="py-3 px-4">Provides tactile haptic feedback during dice rolls, captures, and pawn movements.</td>
                       <td className="py-3 px-4">
                         <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400">
                           Optional
@@ -367,7 +346,7 @@ export default function ChessBingePrivacyPolicyPage() {
             </div>
 
             <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">
-              You can revoke any granted permission at any time directly through Android: <code>Settings &gt; Apps &gt; Chess Binge &gt; Permissions</code>.
+              You can review or revoke permissions at any time via Android: <code>Settings &gt; Apps &gt; Ludo Binge &gt; Permissions</code>.
             </p>
           </section>
 
@@ -378,7 +357,7 @@ export default function ChessBingePrivacyPolicyPage() {
               <span>5. Children&apos;s Privacy (COPPA &amp; GDPR-K)</span>
             </h2>
             <p className="mb-3 text-slate-700 dark:text-slate-300">
-              Chess Binge is intended for general audiences aged 13 and older (or aged 16 and older in the European Union).
+              Ludo Binge is intended for general audiences aged 13 and older (or aged 16 and older in the European Union).
             </p>
             <p className="text-slate-700 dark:text-slate-300">
               We do not knowingly collect, solicit, or maintain personally identifiable information from children under the age of 13. If you believe that a child has provided us with personal information, or if Google AdMob has inadvertently gathered such data, please contact us immediately at <a href="mailto:s.shankhdhar1981@gmail.com" className="text-red-600 dark:text-red-400 font-semibold underline">s.shankhdhar1981@gmail.com</a>, and we will take immediate measures to remove the information.
@@ -393,7 +372,7 @@ export default function ChessBingePrivacyPolicyPage() {
             </h2>
             <div className="space-y-3 text-slate-700 dark:text-slate-300 text-sm sm:text-base">
               <p>
-                <strong>How to Delete Your Gameplay Data:</strong> Since your game data is stored exclusively on your device, you can delete all records, history, ELO rating, and unlocked assets at any time by navigating to <code>Settings &gt; Apps &gt; Chess Binge &gt; Storage &gt; Clear Storage / Clear Data</code>, or by uninstalling the application.
+                <strong>How to Delete Your Gameplay Data:</strong> Since your game data is stored exclusively on your device, you can delete all records, history, match scores, and unlocked assets at any time by navigating to <code>Settings &gt; Apps &gt; Ludo Binge &gt; Storage &gt; Clear Storage / Clear Data</code>, or by uninstalling the application.
               </p>
               <p>
                 <strong>How to Opt-Out of Targeted Advertising:</strong> You can reset or delete your Google Advertising ID on Android via <code>Settings &gt; Google &gt; Ads &gt; Delete advertising ID</code>. Once deleted, advertisers will no longer be able to associate ad activity across different apps with your device.
@@ -470,7 +449,7 @@ export default function ChessBingePrivacyPolicyPage() {
               </div>
               <div className="flex flex-wrap gap-1">
                 <span className="text-slate-500">Application:</span>
-                <span className="font-semibold text-slate-900 dark:text-white">Chess Binge (Android) • Package: chess.binge</span>
+                <span className="font-semibold text-slate-900 dark:text-white">Ludo Binge (Android) • Package: ludo.binge</span>
               </div>
               <div className="flex flex-wrap gap-1">
                 <span className="text-slate-500">Developer&apos;s Website:</span>
@@ -487,7 +466,7 @@ export default function ChessBingePrivacyPolicyPage() {
         <footer className="pt-6 pb-12 text-center text-xs text-slate-500 dark:text-slate-400 space-y-2">
           <p>© {new Date().getFullYear()} Shivam Shankhdhar. All rights reserved.</p>
           <p>
-            Chess Binge • Package: <code className="font-mono text-red-500">chess.binge</code>
+            Ludo Binge • Package: <code className="font-mono text-red-500">ludo.binge</code>
           </p>
           <div className="pt-2">
             <Link
