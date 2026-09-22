@@ -100,7 +100,7 @@ export default function SidebarLayout({
             scale: isScrolled ? 1 : 0.9,
           }}
           transition={{ type: 'spring', stiffness: 360, damping: 28 }}
-          className={`fixed bottom-5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-1.5 p-1.5 rounded-2xl bg-white/95 dark:bg-[#121217]/95 backdrop-blur-2xl border border-red-200/80 dark:border-red-900/50 shadow-2xl shadow-red-950/20 ${
+          className={`fixed bottom-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 p-1.5 rounded-2xl bg-white/95 dark:bg-[#121217]/95 backdrop-blur-2xl border border-red-200/80 dark:border-red-900/50 shadow-2xl shadow-red-950/20 max-w-[calc(100vw-1.5rem)] ${
             isScrolled ? 'pointer-events-auto' : 'pointer-events-none'
           }`}
         >

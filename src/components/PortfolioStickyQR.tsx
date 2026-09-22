@@ -67,7 +67,7 @@ export default function PortfolioStickyQR() {
       {/* Sticky Bottom Floating QR Widget */}
       <aside
         aria-label="Sticky Portfolio QR Code"
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 pointer-events-auto"
+        className="fixed bottom-20 right-3 sm:bottom-6 sm:right-6 z-40 pointer-events-auto"
       >
         <AnimatePresence mode="wait">
           {isMinimized ? (
@@ -80,10 +80,10 @@ export default function PortfolioStickyQR() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsMinimized(false)}
-              className="group flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl bg-gradient-to-br from-[#0c0d15] via-[#120e18] to-[#1a0c14] text-white border border-red-500/40 shadow-xl shadow-red-950/40 backdrop-blur-md cursor-pointer hover:border-red-400 transition-all"
+              className="group flex items-center gap-2 sm:gap-2.5 px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-2xl bg-gradient-to-br from-[#0c0d15] via-[#120e18] to-[#1a0c14] text-white border border-red-500/40 shadow-xl shadow-red-950/40 backdrop-blur-md cursor-pointer hover:border-red-400 transition-all"
               title="Open Portfolio QR Code"
             >
-              <div className="relative flex items-center justify-center h-7 w-7 rounded-lg bg-white text-black shadow-sm overflow-hidden p-0.5">
+              <div className="relative flex items-center justify-center h-6 w-6 sm:h-7 sm:w-7 rounded-lg bg-white text-black shadow-sm overflow-hidden p-0.5">
                 {qrDataUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -92,16 +92,16 @@ export default function PortfolioStickyQR() {
                     className="w-full h-full object-contain"
                   />
                 ) : (
-                  <FiShare2 className="h-4 w-4 text-slate-900" />
+                  <FiShare2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-900" />
                 )}
                 <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-emerald-500 border border-white" />
               </div>
 
-              <div className="text-left pr-1">
-                <p className="text-[10px] uppercase font-mono tracking-wider text-red-400 font-bold leading-tight">
+              <div className="text-left pr-0.5 sm:pr-1">
+                <p className="text-[9px] sm:text-[10px] uppercase font-mono tracking-wider text-red-400 font-bold leading-tight">
                   Share &amp; Scan
                 </p>
-                <p className="text-xs font-bold text-white leading-tight">
+                <p className="text-[11px] sm:text-xs font-bold text-white leading-tight">
                   Portfolio QR
                 </p>
               </div>
