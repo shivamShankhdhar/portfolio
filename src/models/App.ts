@@ -72,6 +72,46 @@ const appSchema = new mongoose.Schema(
       default: '',
       trim: true,
     },
+    playConsoleUrl: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    featureGraphic: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    playScreenshots: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+    downloadsTier: {
+      type: String,
+      default: '10K+ Installs',
+      trim: true,
+    },
+    contentRating: {
+      type: String,
+      default: 'Rated for 3+',
+      trim: true,
+    },
+    playProtectVerified: {
+      type: Boolean,
+      default: true,
+    },
+    releaseTrack: {
+      type: String,
+      default: 'Production Track',
+      trim: true,
+    },
+    whatsNew: {
+      type: String,
+      default: '',
+      trim: true,
+    },
     privacyUrl: {
       type: String,
       default: '',
@@ -99,7 +139,11 @@ const appSchema = new mongoose.Schema(
       default: 0,
     },
   },
-  { timestamps: true }
+  { timestamps: true, strict: false }
 );
+
+if (mongoose.models.App) {
+  delete mongoose.models.App;
+}
 
 export default mongoose.models.App || mongoose.model('App', appSchema);

@@ -120,7 +120,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#09090b] text-slate-900 dark:text-slate-100 transition-colors duration-200">
-      <Header name={profile?.name} role={profile?.roles?.[0]} />
+      <Header name={profile?.name} role={profile?.roles?.[0]} appsUrl={profile?.appsUrl} />
       <SidebarLayout
         hasProjects={projects.length > 0}
         hasSkills={skills.length > 0}

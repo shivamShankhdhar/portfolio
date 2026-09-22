@@ -2,24 +2,46 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { FiMenu, FiX, FiSun, FiMoon, FiSend } from 'react-icons/fi';
+import { FiMenu, FiX, FiSun, FiMoon, FiSend, FiExternalLink } from 'react-icons/fi';
 import { useTheme } from '@/context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface HeaderProps {
   name?: string;
   role?: string;
+  appsUrl?: string;
 }
 
-export default function Header({ name = 'Shivam Shankhdhar', role = 'Full Stack & Mobile Engineer' }: HeaderProps) {
+export default function Header({
+  name = 'Shivam Shankhdhar',
+  role = 'Full Stack & Mobile Engineer',
+  appsUrl,
+}: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [liveAppsUrl, setLiveAppsUrl] = useState<string>(appsUrl || '');
 
   const nameParts = (name || 'Shivam Shankhdhar').trim().split(' ');
   const firstName = nameParts[0] || 'Shivam';
   const lastName = nameParts.slice(1).join(' ') || 'Shankhdhar';
+
+  useEffect(() => {
+    if (appsUrl) setLiveAppsUrl(appsUrl);
+  }, [appsUrl]);
+
+  useEffect(() => {
+    fetch('/api/profile?t=' + Date.now(), { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((res) => {
+        const data = res?.data || res;
+        if (data?.appsUrl) {
+          setLiveAppsUrl(data.appsUrl);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -31,13 +53,20 @@ export default function Header({ name = 'Shivam Shankhdhar', role = 'Full Stack 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const targetAppsUrl = liveAppsUrl || appsUrl || process.env.NEXT_PUBLIC_APPS_URL || 'http://localhost:3002';
+  const isAppsUrlExternal = targetAppsUrl.startsWith('http');
+
   const navLinks = [
-    { href: '/#projects', label: 'Projects' },
-    { href: '/mobile-apps', label: 'Mobile Apps' },
-    { href: '/#skills', label: 'Skills' },
-    { href: '/#experience', label: 'Experience' },
-    { href: '/#education', label: 'Education' },
-    { href: '/#contact', label: 'Contact' },
+    { href: '/#projects', label: 'Projects', isExternal: false },
+    {
+      href: targetAppsUrl,
+      label: 'Mobile Apps',
+      isExternal: isAppsUrlExternal,
+    },
+    { href: '/#skills', label: 'Skills', isExternal: false },
+    { href: '/#experience', label: 'Experience', isExternal: false },
+    { href: '/#education', label: 'Education', isExternal: false },
+    { href: '/#contact', label: 'Contact', isExternal: false },
   ];
 
   return (
@@ -72,7 +101,7 @@ export default function Header({ name = 'Shivam Shankhdhar', role = 'Full Stack 
               <p className="text-base font-bold tracking-tight text-slate-900 dark:text-white transition-colors">
                 {firstName} <span className="text-red-600 dark:text-red-500">{lastName}</span>
               </p>
-              <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+              <p className="hidden sm:block text-[11px] font-medium text-slate-500 dark:text-slate-400">
                 {role}
               </p>
             </div>
@@ -82,12 +111,24 @@ export default function Header({ name = 'Shivam Shankhdhar', role = 'Full Stack 
           <nav className="hidden md:flex items-center gap-1 lg:gap-2">
             {navLinks.map((link) => (
               <motion.div key={link.href} whileHover={{ y: -1 }} whileTap={{ y: 0 }}>
-                <Link
-                  href={link.href}
-                  className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all duration-150"
-                >
-                  {link.label}
-                </Link>
+                {link.isExternal ? (
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all duration-150 inline-flex items-center gap-1.5"
+                  >
+                    <span>{link.label}</span>
+                    <FiExternalLink className="h-3 w-3 text-red-500 opacity-80" />
+                  </a>
+                ) : (
+                  <Link
+                    href={link.href}
+                    className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all duration-150"
+                  >
+                    {link.label}
+                  </Link>
+                )}
               </motion.div>
             ))}
           </nav>
@@ -145,14 +186,28 @@ export default function Header({ name = 'Shivam Shankhdhar', role = 'Full Stack 
             className="md:hidden border-b border-red-200/40 dark:border-red-900/40 bg-white/95 dark:bg-[#09090b]/95 backdrop-blur-xl px-4 pt-2 pb-5 space-y-1 overflow-hidden"
           >
             {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-              >
-                {link.label}
-              </Link>
+              link.isExternal ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsOpen(false)}
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-600 dark:hover:text-red-400 transition-colors flex items-center justify-between"
+                >
+                  <span>{link.label}</span>
+                  <FiExternalLink className="h-3.5 w-3.5 text-red-500" />
+                </a>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                >
+                  {link.label}
+                </Link>
+              )
             ))}
             <div className="pt-2 flex items-center justify-end border-t border-slate-200/60 dark:border-red-900/30 px-3">
               <Link

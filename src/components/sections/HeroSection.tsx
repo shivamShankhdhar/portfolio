@@ -28,6 +28,7 @@ interface HeroSectionProps {
     linkedinUrl?: string;
     githubUrl?: string;
     email?: string;
+    appsUrl?: string;
   };
   adminEmail: string;
   loading?: boolean;
@@ -152,13 +153,16 @@ const techStack = {
                 <FiArrowDown className="h-4 w-4" />
               </a>
 
-              <Link
-                href="/mobile-apps"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-red-500/30 hover:border-red-500 bg-red-50/70 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 shadow-xs"
+              <a
+                href={profile?.appsUrl || '/mobile-apps'}
+                target={profile?.appsUrl ? '_blank' : undefined}
+                rel={profile?.appsUrl ? 'noopener noreferrer' : undefined}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-red-500/30 hover:border-red-500 bg-red-50/70 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 shadow-xs cursor-pointer"
               >
                 <FiSmartphone className="h-4 w-4" />
                 <span>Mobile Apps</span>
-              </Link>
+                {profile?.appsUrl && <span className="text-xs opacity-75">↗</span>}
+              </a>
 
               <a
                 href="#contact"

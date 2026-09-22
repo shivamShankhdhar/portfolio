@@ -31,6 +31,21 @@ const profileSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    portfolioUrl: {
+      type: String,
+      trim: true,
+      default: 'http://localhost:3000',
+    },
+    appsUrl: {
+      type: String,
+      trim: true,
+      default: 'http://localhost:3002',
+    },
+    adminUrl: {
+      type: String,
+      trim: true,
+      default: 'http://localhost:3003',
+    },
     roles: {
       type: [String],
       default: [

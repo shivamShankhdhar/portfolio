@@ -9,6 +9,7 @@ import {
 import { FaGamepad } from 'react-icons/fa6';
 import connectDB, { isDbConfigured } from '@/lib/db';
 import App from '@/models/App';
+import Profile from '@/models/Profile';
 import { defaultApps } from '@/lib/defaultData';
 import MobileAppsClient from '@/components/mobile-apps/MobileAppsClient';
 
@@ -28,11 +29,14 @@ export const metadata: Metadata = {
   ],
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getApps() {
   try {
     if (isDbConfigured()) {
       await connectDB();
-      const apps = await App.find().sort({ order: 1, createdAt: -1 });
+      const apps = await App.find().sort({ order: 1, createdAt: -1 }).lean();
 
       if (apps && apps.length > 0) {
         return JSON.parse(JSON.stringify(apps));
@@ -46,8 +50,21 @@ async function getApps() {
   return defaultApps;
 }
 
+async function getAppsUrl() {
+  try {
+    if (isDbConfigured()) {
+      await connectDB();
+      const profile: any = await Profile.findOne().lean();
+      if (profile?.appsUrl) return profile.appsUrl;
+    }
+  } catch (error) {
+    console.error('Error loading appsUrl from DB:', error);
+  }
+  return process.env.NEXT_PUBLIC_APPS_URL || 'http://localhost:3002';
+}
+
 export default async function MobileAppsPage() {
-  const apps = await getApps();
+  const [apps, appsUrl] = await Promise.all([getApps(), getAppsUrl()]);
   const gamesCount = apps.filter(
     (a: any) => (a.category || '').toLowerCase() === 'games'
   ).length;
@@ -103,9 +120,19 @@ export default async function MobileAppsPage() {
                 className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/30 transition-colors"
               >
                 <FaGamepad className="h-3.5 w-3.5" />
-                <span>{gamesCount} Games on Dedicated Showcase →</span>
+                <span>{gamesCount} Games on Showcase →</span>
               </Link>
             )}
+
+            <a
+              href={appsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-xl text-xs font-semibold bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white shadow-sm transition-all"
+            >
+              <span>Visit Dedicated Mobile Lab Hub</span>
+              <span className="text-[10px] opacity-80">↗</span>
+            </a>
           </div>
         </div>
 
