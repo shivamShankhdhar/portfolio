@@ -113,14 +113,6 @@ export default function Footer({
               </li>
               <li>
                 <Link
-                  href="/about"
-                  className="text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition"
-                >
-                  About Me
-                </Link>
-              </li>
-              <li>
-                <Link
                   href="/#projects"
                   className="text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition"
                 >
@@ -141,6 +133,14 @@ export default function Footer({
                   className="text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition"
                 >
                   Work Experience
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/#education"
+                  className="text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition"
+                >
+                  Education
                 </Link>
               </li>
               <li>
