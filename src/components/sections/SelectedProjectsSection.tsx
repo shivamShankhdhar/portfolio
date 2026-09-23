@@ -37,8 +37,8 @@ export default function SelectedProjectsSection({
   ];
 
   return (
-    <section id="projects" className="pt-8 pb-12 sm:pt-10 sm:pb-14 bg-[#07080b] text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="projects" className="pt-8 pb-12 sm:pt-10 sm:pb-14 bg-[#07080b] text-white w-full max-w-full overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         
         {/* Section Header: SELECTED PROJECTS ─────── VIEW ALL PROJECTS → */}
         <div className="flex items-center justify-between gap-4 pb-6 sm:pb-8">
@@ -61,8 +61,8 @@ export default function SelectedProjectsSection({
           </a>
         </div>
 
-        {/* 3-Card Horizontal Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        {/* Responsive Grid: 1 col on mobile, 2 col on tablet, 3 col on desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {showcaseProjects.map((project, idx) => {
             const indexStr = `0${idx + 1}`;
             const targetUrl = project.link || project.github || '#';

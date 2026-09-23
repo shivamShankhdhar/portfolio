@@ -118,7 +118,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#07080b] text-slate-100 transition-colors duration-200">
+    <div className="min-h-screen bg-[#07080b] text-slate-100 transition-colors duration-200 w-full max-w-full overflow-x-hidden">
       <Header name={profile?.name} role={profile?.roles?.[0]} appsUrl={profile?.appsUrl} />
       <SidebarLayout
         hasProjects={projects.length > 0}

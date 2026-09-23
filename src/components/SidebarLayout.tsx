@@ -164,7 +164,7 @@ export default function SidebarLayout({
         </motion.nav>
       )}
 
-      <main className="space-y-0 scroll-smooth">{children}</main>
+      <main className="space-y-0 scroll-smooth w-full max-w-full overflow-x-hidden">{children}</main>
     </>
   );
 }

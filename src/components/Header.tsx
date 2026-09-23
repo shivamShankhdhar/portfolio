@@ -108,7 +108,7 @@ export default function Header({
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
             {navLinks.map((link) => (
               <motion.div key={link.href} whileHover={{ y: -1 }} whileTap={{ y: 0 }}>
                 {link.isExternal ? (
@@ -134,7 +134,7 @@ export default function Header({
           </nav>
 
           {/* Right Action Buttons */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 sm:gap-2.5">
             {/* Theme Toggle Button */}
             {mounted && (
               <motion.button
@@ -156,18 +156,18 @@ export default function Header({
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
               <Link
                 href="/contact"
-                className="hidden md:inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white shadow-sm shadow-red-600/20 hover:shadow-md hover:shadow-red-600/35 transition-all duration-200"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 text-xs font-semibold rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white shadow-sm shadow-red-600/20 hover:shadow-md hover:shadow-red-600/35 transition-all duration-200"
               >
                 <FiSend className="h-3.5 w-3.5" />
                 <span>Hire Me</span>
               </Link>
             </motion.div>
 
-            {/* Mobile Hamburger Menu */}
+            {/* Mobile/Tablet Hamburger Menu */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle mobile menu"
-              className="md:hidden flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 dark:border-red-950/40 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-red-950/40 transition-colors"
+              className="lg:hidden flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 dark:border-red-950/40 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-red-950/40 transition-colors"
             >
               {isOpen ? <FiX className="h-5 w-5" /> : <FiMenu className="h-5 w-5" />}
             </button>
@@ -175,7 +175,7 @@ export default function Header({
         </div>
       </div>
 
-      {/* Mobile Drawer Navigation */}
+      {/* Mobile & Tablet Drawer Navigation */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -183,7 +183,7 @@ export default function Header({
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden border-b border-red-200/40 dark:border-red-900/40 bg-white/95 dark:bg-[#09090b]/95 backdrop-blur-xl px-4 pt-2 pb-5 space-y-1 overflow-hidden"
+            className="lg:hidden border-b border-red-200/40 dark:border-red-900/40 bg-white/95 dark:bg-[#09090b]/95 backdrop-blur-xl px-4 pt-2 pb-5 space-y-1 overflow-hidden"
           >
             {navLinks.map((link) => (
               link.isExternal ? (

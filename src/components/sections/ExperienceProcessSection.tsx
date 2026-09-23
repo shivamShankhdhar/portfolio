@@ -144,8 +144,8 @@ export default function ExperienceProcessSection({
   const displayedSkills = sortedSkills.slice(0, 20);
 
   return (
-    <section id="skills" className="pt-6 pb-12 sm:pt-8 sm:pb-14 bg-[#07080b] text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="skills" className="pt-6 pb-12 sm:pt-8 sm:pb-14 bg-[#07080b] text-white w-full max-w-full overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         
         {/* Section Header: EDUCATION, SKILLS & WORK PROCESS ─────── ENGINEERING FOUNDATION */}
         <div className="flex items-center justify-between gap-4 pb-6 sm:pb-8">
@@ -164,10 +164,10 @@ export default function ExperienceProcessSection({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-stretch">
           
-          {/* Column 1: EDUCATION & SKILLS (4 Cols) */}
-          <div className="lg:col-span-4 p-6 sm:p-7 rounded-2xl bg-[#0c0d12] border border-white/10 flex flex-col justify-between space-y-6">
+          {/* Column 1: EDUCATION & SKILLS (4 Cols on desktop, 6 on tablet) */}
+          <div className="md:col-span-6 lg:col-span-4 p-6 sm:p-7 rounded-2xl bg-[#0c0d12] border border-white/10 flex flex-col justify-between space-y-6">
             <div>
               <h3 className="font-bebas text-xl sm:text-2xl font-bold tracking-wider text-white uppercase pb-4 border-b border-white/5">
                 EDUCATION &amp; SKILLS
@@ -228,8 +228,8 @@ export default function ExperienceProcessSection({
             </div>
           </div>
 
-          {/* Column 2: WORK PROCESS (5 Cols) */}
-          <div id="experience" className="lg:col-span-4 p-6 sm:p-7 rounded-2xl bg-[#0c0d12] border border-white/10 space-y-6">
+          {/* Column 2: WORK PROCESS (4 Cols on desktop, 6 on tablet) */}
+          <div id="experience" className="md:col-span-6 lg:col-span-4 p-6 sm:p-7 rounded-2xl bg-[#0c0d12] border border-white/10 space-y-6">
             <h3 className="font-bebas text-xl sm:text-2xl font-bold tracking-wider text-white uppercase pb-4 border-b border-white/5">
               WORK PROCESS
             </h3>
@@ -266,8 +266,8 @@ export default function ExperienceProcessSection({
             </div>
           </div>
 
-          {/* Column 3: INSPIRATIONAL QUOTE CARD (3 Cols) */}
-          <div className="lg:col-span-4 p-7 rounded-2xl bg-gradient-to-br from-[#7a1219] via-[#4d0c11] to-[#1c0608] border border-red-500/30 flex flex-col justify-between shadow-2xl shadow-red-950/40 relative overflow-hidden">
+          {/* Column 3: INSPIRATIONAL QUOTE CARD (4 Cols on desktop, 12 on tablet) */}
+          <div className="md:col-span-12 lg:col-span-4 p-7 rounded-2xl bg-gradient-to-br from-[#7a1219] via-[#4d0c11] to-[#1c0608] border border-red-500/30 flex flex-col justify-between shadow-2xl shadow-red-950/40 relative overflow-hidden">
             {/* Background Giant Watermark Quote */}
             <div className="absolute top-2 right-4 font-serif text-[120px] font-black text-red-500/10 pointer-events-none select-none leading-none">
               &ldquo;

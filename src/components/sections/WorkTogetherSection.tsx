@@ -104,17 +104,17 @@ export default function WorkTogetherSection({
   ];
 
   return (
-    <section id="contact" className="pt-6 pb-14 sm:pt-8 sm:pb-16 bg-[#07080b] text-white border-t border-white/5 relative isolate">
+    <section id="contact" className="pt-6 pb-14 sm:pt-8 sm:pb-16 bg-[#07080b] text-white border-t border-white/5 relative isolate w-full max-w-full overflow-hidden">
       {/* Background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-red-600/10 rounded-full blur-[160px] pointer-events-none -z-10" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] sm:w-[600px] h-[300px] sm:h-[500px] bg-red-600/10 rounded-full blur-[120px] sm:blur-[160px] pointer-events-none -z-10" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         
         {/* The 3-Column Showcase: Left: Intro & Modal Trigger, Middle: Contact Pills, Right: Embedded QR Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 items-center">
           
           {/* Left Column: Heading, Subtitle & Action */}
-          <div className="lg:col-span-4 space-y-5 text-center lg:text-left">
+          <div className="md:col-span-2 lg:col-span-4 space-y-5 text-center lg:text-left">
             <div>
               <h2 className="font-bebas text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white uppercase leading-[0.95] flex flex-wrap items-center justify-center lg:justify-start gap-2">
                 <span>LET&apos;S WORK</span>
@@ -133,17 +133,18 @@ export default function WorkTogetherSection({
                 onClick={onOpenContact || (() => {
                   window.location.href = `mailto:${contactEmail}?subject=Software%20Collaboration`;
                 })}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/5 hover:bg-red-600 border border-white/10 hover:border-red-500 text-xs font-mono font-bold uppercase tracking-wider text-slate-200 hover:text-white transition-all group cursor-pointer"
+                className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full bg-white/5 hover:bg-red-600 border border-white/10 hover:border-red-500 text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider text-slate-200 hover:text-white transition-all group cursor-pointer max-w-full"
               >
-                <span className="h-2 w-2 rounded-full bg-red-500 group-hover:bg-white animate-pulse" />
-                <span>AVAILABLE FOR FREELANCE / FULL-TIME</span>
-                <FiArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                <span className="h-2 w-2 rounded-full bg-red-500 group-hover:bg-white animate-pulse shrink-0" />
+                <span className="hidden sm:inline">AVAILABLE FOR FREELANCE / FULL-TIME</span>
+                <span className="sm:hidden">AVAILABLE FOR HIRE</span>
+                <FiArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1 shrink-0" />
               </button>
             </div>
           </div>
 
           {/* Middle Column: Rounded Contact Pills */}
-          <div className="lg:col-span-4 space-y-3">
+          <div className="md:col-span-1 lg:col-span-4 space-y-3">
             {contactItems.map((item) => {
               const Icon = item.icon;
               const isCopied = copiedKey === item.key;
@@ -194,7 +195,7 @@ export default function WorkTogetherSection({
           </div>
 
           {/* Right Column: High-End Embedded Portfolio QR Section */}
-          <div className="lg:col-span-4 flex justify-center w-full">
+          <div className="md:col-span-1 lg:col-span-4 flex justify-center w-full">
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}

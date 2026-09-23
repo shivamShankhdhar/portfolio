@@ -55,29 +55,29 @@ export default function HeroShowcaseSection({
   };
 
   return (
-    <section className="relative isolate min-h-[85vh] sm:min-h-[88vh] bg-[#07080b] text-white overflow-hidden pt-16 sm:pt-20 pb-4 flex flex-col justify-between">
+    <section className="relative isolate min-h-[85vh] sm:min-h-[88vh] bg-[#07080b] text-white overflow-hidden pt-20 sm:pt-24 pb-6 flex flex-col justify-between w-full max-w-full">
       {/* Background Soft Glow Orbs */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-red-600/15 rounded-full blur-[160px] pointer-events-none z-0" />
-      <div className="absolute top-16 right-10 w-[350px] h-[300px] bg-rose-600/10 rounded-full blur-[140px] pointer-events-none z-0" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] sm:w-[500px] lg:w-[700px] h-[300px] sm:h-[400px] lg:h-[500px] bg-red-600/15 rounded-full blur-[120px] sm:blur-[160px] pointer-events-none z-0" />
+      <div className="absolute top-16 right-4 sm:right-10 w-[200px] sm:w-[350px] h-[200px] sm:h-[300px] bg-rose-600/10 rounded-full blur-[100px] sm:blur-[140px] pointer-events-none z-0" />
 
       {/* Giant Red "PORTFOLIO" Background Lettering */}
       <div
         aria-hidden="true"
-        className="absolute inset-x-0 top-12 sm:top-14 lg:top-12 flex justify-center pointer-events-none select-none z-0 overflow-hidden"
+        className="absolute inset-x-0 top-14 sm:top-16 lg:top-14 flex justify-center pointer-events-none select-none z-0 overflow-hidden w-full max-w-full"
       >
-        <span className="font-bebas text-[22vw] sm:text-[21vw] lg:text-[18.5vw] font-black text-[#dc2626]/25 sm:text-[#dc2626]/30 tracking-wider leading-none select-none drop-shadow-[0_10px_30px_rgba(220,38,38,0.25)]">
+        <span className="font-bebas text-[18vw] sm:text-[19vw] lg:text-[18.5vw] font-black text-[#dc2626]/20 sm:text-[#dc2626]/30 tracking-wider leading-none select-none drop-shadow-[0_10px_30px_rgba(220,38,38,0.25)]">
           PORTFOLIO
         </span>
       </div>
 
-      {/* 1. Top Sub-Bar (Matches reference image top bar) */}
+      {/* 1. Top Sub-Bar with Responsive Available Badge */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="flex items-center justify-between gap-4 pb-2 border-b border-white/5">
-          <div className="flex flex-col">
-            <span className="text-[11px] sm:text-xs font-mono font-bold tracking-widest text-red-500 uppercase">
+        <div className="flex items-center justify-between gap-3 sm:gap-4 pb-2.5 sm:pb-3 border-b border-white/10 w-full">
+          <div className="flex flex-col min-w-0 flex-1">
+            <span className="text-[11px] sm:text-xs font-mono font-bold tracking-wider sm:tracking-widest text-red-500 uppercase truncate">
               {primaryRole}
             </span>
-            <span className="text-[10px] sm:text-[11px] font-mono tracking-wider text-slate-400 uppercase hidden sm:block">
+            <span className="text-[10px] sm:text-[11px] font-mono tracking-wider text-slate-400 uppercase hidden sm:block truncate">
               {secondaryRole}
             </span>
           </div>
@@ -85,16 +85,22 @@ export default function HeroShowcaseSection({
           <motion.button
             type="button"
             onClick={handleOpenContact}
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 hover:border-red-500/40 transition-all cursor-pointer"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-200 border border-white/15 hover:border-red-500/50 transition-all shrink-0 cursor-pointer shadow-xs"
           >
-            <span className="relative flex h-2 w-2">
+            <span className="relative flex h-2 w-2 shrink-0">
               <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${profile?.available !== false ? 'bg-emerald-400' : 'bg-amber-400'} opacity-75`} />
               <span className={`relative inline-flex rounded-full h-2 w-2 ${profile?.available !== false ? 'bg-emerald-500' : 'bg-amber-500'}`} />
             </span>
-            <span className="tracking-wide">
+            <span className="tracking-wide hidden sm:inline">
               {profile?.available !== false ? 'AVAILABLE FOR FREELANCE ✦' : 'OPEN TO OPPORTUNITIES ✦'}
+            </span>
+            <span className="tracking-wide hidden min-[380px]:inline sm:hidden">
+              {profile?.available !== false ? 'AVAILABLE FOR HIRE ✦' : 'OPEN TO WORK ✦'}
+            </span>
+            <span className="tracking-wide min-[380px]:hidden">
+              {profile?.available !== false ? 'AVAILABLE ✦' : 'OPEN ✦'}
             </span>
           </motion.button>
         </div>
@@ -105,7 +111,7 @@ export default function HeroShowcaseSection({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center pt-4 sm:pt-8 lg:pt-10">
           
           {/* Left Column: Hello script + Giant Name + Role + Bio + Actions */}
-          <div className="lg:col-span-7 space-y-5 z-10 text-center lg:text-left">
+          <div className="lg:col-span-7 space-y-5 z-10 text-center lg:text-left w-full">
             <motion.div
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
@@ -115,7 +121,7 @@ export default function HeroShowcaseSection({
                 Hello, I&apos;m
               </p>
               
-              <h1 className="font-bebas text-6xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-white leading-[0.9] mt-2 drop-shadow-md">
+              <h1 className="font-bebas text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tight text-white leading-[0.9] mt-2 drop-shadow-md">
                 SHIVAM<br />
                 SHANKHDHAR
               </h1>
@@ -129,7 +135,7 @@ export default function HeroShowcaseSection({
                 </span>
               </div>
 
-              <p className="text-sm sm:text-base text-slate-300 font-medium leading-relaxed max-w-xl mx-auto lg:mx-0 mt-4 opacity-90">
+              <p className="text-sm sm:text-base text-slate-300 font-medium leading-relaxed max-w-2xl mx-auto lg:mx-0 mt-4 opacity-90">
                 {bio}
               </p>
 
@@ -159,14 +165,14 @@ export default function HeroShowcaseSection({
           </div>
 
           {/* Right Column: Spark Badge & Metrics Stack */}
-          <div className="lg:col-span-5 space-y-8 z-10 text-center lg:text-left flex flex-col justify-center items-center lg:items-end py-4">
+          <div className="lg:col-span-5 space-y-8 z-10 text-center lg:text-left flex flex-col justify-center items-center lg:items-end py-4 w-full">
             
             {/* Spark Motto Pill */}
             <motion.div
               initial={{ opacity: 0, x: 12 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="inline-flex items-center gap-3 p-4 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-md max-w-sm shadow-xl"
+              className="inline-flex items-center gap-3 p-4 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-md w-full max-w-md lg:max-w-sm shadow-xl text-left"
             >
               <div className="h-8 w-8 rounded-xl bg-red-600/20 border border-red-500/30 flex items-center justify-center shrink-0 text-red-400 font-bold text-sm">
                 ✦
@@ -177,7 +183,7 @@ export default function HeroShowcaseSection({
             </motion.div>
 
             {/* Vertical Stats Stack (Matching reference: 3+, 40+, 20+) */}
-            <div className="space-y-6 pt-2 max-w-sm w-full">
+            <div className="space-y-6 pt-2 w-full max-w-md lg:max-w-sm">
               {/* Stat 1: Years Experience */}
               <div className="flex items-baseline justify-between border-b border-white/10 pb-4">
                 <span className="font-bebas text-6xl sm:text-7xl font-bold text-red-500 tracking-tight leading-none drop-shadow-sm">
