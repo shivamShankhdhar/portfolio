@@ -50,7 +50,7 @@ export default function ExperienceProcessSection({
 }: ExperienceProcessSectionProps) {
   const quoteText =
     headlineQuote ||
-    'Good software is not just how it looks, but how it scales, performs, and withstands production load.';
+    'Engineering is not merely writing code to make things work; it is designing resilient architectures that endure under load and craft experiences users love.';
 
   // Work Process steps from reference
   const processSteps = [
@@ -229,7 +229,7 @@ export default function ExperienceProcessSection({
           </div>
 
           {/* Column 2: WORK PROCESS (4 Cols on desktop, 6 on tablet) */}
-          <div id="experience" className="md:col-span-6 lg:col-span-4 p-6 sm:p-7 rounded-2xl bg-[#0c0d12] border border-white/10 space-y-6">
+          <div id="process" className="md:col-span-6 lg:col-span-4 p-6 sm:p-7 rounded-2xl bg-[#0c0d12] border border-white/10 space-y-6">
             <h3 className="font-bebas text-xl sm:text-2xl font-bold tracking-wider text-white uppercase pb-4 border-b border-white/5">
               WORK PROCESS
             </h3>

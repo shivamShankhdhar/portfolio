@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { FiMenu, FiX, FiSun, FiMoon, FiSend, FiExternalLink } from 'react-icons/fi';
 import { useTheme } from '@/context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { resolveAppsUrl } from '@/lib/urls';
 
 interface HeaderProps {
   name?: string;
@@ -53,7 +54,7 @@ export default function Header({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const targetAppsUrl = liveAppsUrl || appsUrl || process.env.NEXT_PUBLIC_APPS_URL || 'http://localhost:3002';
+  const targetAppsUrl = resolveAppsUrl(liveAppsUrl || appsUrl);
   const isAppsUrlExternal = targetAppsUrl.startsWith('http');
 
   const navLinks = [

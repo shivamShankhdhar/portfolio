@@ -16,9 +16,19 @@ const defaultProfile = {
     'MERN Stack Architect',
     'Next.js & TypeScript Developer',
   ],
-  linkedinUrl: 'https://www.linkedin.com/in/shivam-shankhdhar',
+  linkedinUrl: 'https://www.linkedin.com/in/er-shivam-shankhdhar-930799141',
   githubUrl: 'https://github.com/shivamShankhdhar',
   email: 'er.shivam1214@gmail.com',
+  phone: '+91 8448967919',
+  location: 'Bareilly, Uttar Pradesh, India',
+  yearsExperience: '3+',
+  projectsCompleted: '20+',
+  happyClients: '100%',
+  portfolioUrl: 'https://www.shivamshankhdhar.online',
+  appsUrl: 'https://www.apps.shivamshankhdhar.online',
+  adminUrl: 'https://www.admin.shivamshankhdhar.online',
+  headlineQuote:
+    'Engineering is not merely writing code to make things work; it is designing resilient architectures that endure under load and craft experiences users love.',
 };
 
 export async function GET() {
@@ -64,24 +74,18 @@ export async function POST(request: Request) {
 
     await connectDB();
     const body = await request.json();
-    const { name, bio, linkedinUrl, githubUrl, email, available, roles } = body;
+    const { _id, __v, createdAt, updatedAt, ...updates } = body;
 
-    if (!name) {
+    if (!updates.name) {
       return Response.json({ success: false, error: 'Name is required' }, { status: 400 });
     }
 
-    await Profile.deleteMany({});
-    const profile = new Profile({
-      name,
-      bio,
-      linkedinUrl,
-      githubUrl,
-      email,
-      available,
-      roles,
-    });
+    const profile = await Profile.findOneAndUpdate(
+      {},
+      { $set: updates },
+      { upsert: true, new: true }
+    ).lean();
 
-    await profile.save();
     return Response.json({ success: true, data: profile }, { status: 201 });
   } catch (error: any) {
     console.error('[Profile API] POST error:', error);
@@ -101,17 +105,17 @@ export async function PUT(request: Request) {
 
     await connectDB();
     const body = await request.json();
-    const { name, bio, linkedinUrl, githubUrl, email, available, roles } = body;
+    const { _id, __v, createdAt, updatedAt, ...updates } = body;
 
-    if (!name) {
+    if (!updates.name) {
       return Response.json({ success: false, error: 'Name is required' }, { status: 400 });
     }
 
     const profile = await Profile.findOneAndUpdate(
       {},
-      { name, bio, linkedinUrl, githubUrl, email, available, roles },
+      { $set: updates },
       { upsert: true, new: true }
-    );
+    ).lean();
 
     return Response.json({ success: true, data: profile }, { status: 200 });
   } catch (error: any) {

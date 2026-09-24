@@ -6,6 +6,7 @@ import {
   FiX,
   FiUser,
   FiMail,
+  FiPhone,
   FiMessageSquare,
   FiSend,
   FiLoader,
@@ -18,6 +19,8 @@ interface ContactDialogProps {
   isOpen: boolean;
   onClose: () => void;
   defaultTopic?: string;
+  phone?: string;
+  email?: string;
 }
 
 const inquiryTopics = [
@@ -32,6 +35,8 @@ export default function ContactDialog({
   isOpen,
   onClose,
   defaultTopic = 'Full-Time Engineering Role',
+  phone = '+91 8448967919',
+  email = 'er.shivam1214@gmail.com',
 }: ContactDialogProps) {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [selectedTopic, setSelectedTopic] = useState<string>(defaultTopic);
@@ -192,8 +197,30 @@ export default function ContactDialog({
                     LET&apos;S WORK TOGETHER
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-400 mt-1">
-                    Fill out the form below to kickstart our collaboration.
+                    Fill out the form below or reach out directly:
                   </p>
+
+                  {/* Direct Contact Badges */}
+                  <div className="flex flex-wrap items-center gap-2 pt-2">
+                    {email && (
+                      <a
+                        href={`mailto:${email}`}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-red-500/20 border border-white/10 hover:border-red-500/40 text-xs font-mono text-slate-300 hover:text-white transition-all"
+                      >
+                        <FiMail className="h-3.5 w-3.5 text-red-400" />
+                        <span>{email}</span>
+                      </a>
+                    )}
+                    {phone && (
+                      <a
+                        href={`tel:${phone.replace(/\s+/g, '')}`}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-emerald-500/20 border border-white/10 hover:border-emerald-500/40 text-xs font-mono text-slate-300 hover:text-white transition-all"
+                      >
+                        <FiPhone className="h-3.5 w-3.5 text-emerald-400" />
+                        <span>{phone}</span>
+                      </a>
+                    )}
+                  </div>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">

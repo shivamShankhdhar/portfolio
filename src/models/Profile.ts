@@ -34,17 +34,17 @@ const profileSchema = new mongoose.Schema(
     portfolioUrl: {
       type: String,
       trim: true,
-      default: 'http://localhost:3000',
+      default: 'https://www.shivamshankhdhar.online',
     },
     appsUrl: {
       type: String,
       trim: true,
-      default: 'http://localhost:3002',
+      default: 'https://www.apps.shivamshankhdhar.online',
     },
     adminUrl: {
       type: String,
       trim: true,
-      default: 'http://localhost:3003',
+      default: 'https://www.admin.shivamshankhdhar.online',
     },
     roles: {
       type: [String],
@@ -73,7 +73,8 @@ const profileSchema = new mongoose.Schema(
     headlineQuote: {
       type: String,
       trim: true,
-      default: 'Good software is not just how it looks, but how it scales and performs.',
+      default:
+        'Engineering is not merely writing code to make things work; it is designing resilient architectures that endure under load and craft experiences users love.',
     },
     location: {
       type: String,

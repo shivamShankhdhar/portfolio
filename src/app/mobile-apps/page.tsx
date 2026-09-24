@@ -60,7 +60,7 @@ async function getAppsUrl() {
   } catch (error) {
     console.error('Error loading appsUrl from DB:', error);
   }
-  return process.env.NEXT_PUBLIC_APPS_URL || 'http://localhost:3002';
+  return process.env.NEXT_PUBLIC_APPS_URL || 'https://www.apps.shivamshankhdhar.online';
 }
 
 export default async function MobileAppsPage() {

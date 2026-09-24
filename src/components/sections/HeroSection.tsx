@@ -18,6 +18,7 @@ import { SiReact } from 'react-icons/si';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { HeroSectionSkeleton } from '@/components/ui/Skeleton';
+import { resolveAppsUrl } from '@/lib/urls';
 
 interface HeroSectionProps {
   profile: {
@@ -154,14 +155,14 @@ const techStack = {
               </a>
 
               <a
-                href={profile?.appsUrl || '/mobile-apps'}
-                target={profile?.appsUrl ? '_blank' : undefined}
-                rel={profile?.appsUrl ? 'noopener noreferrer' : undefined}
+                href={resolveAppsUrl(profile?.appsUrl)}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border border-red-500/30 hover:border-red-500 bg-red-50/70 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 shadow-xs cursor-pointer"
               >
                 <FiSmartphone className="h-4 w-4" />
                 <span>Mobile Apps</span>
-                {profile?.appsUrl && <span className="text-xs opacity-75">↗</span>}
+                <span className="text-xs opacity-75">↗</span>
               </a>
 
               <a
@@ -231,7 +232,7 @@ const techStack = {
                     className={`px-2.5 py-1 rounded-lg transition-all flex items-center gap-1.5 ${
                       activeTab === 'developer'
                         ? 'bg-white dark:bg-[#1c1c28] text-red-600 dark:text-red-400 font-semibold shadow-xs'
-                        : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                        : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
                     }`}
                   >
                     <FaJava className="h-3 w-3 text-red-500" />
@@ -242,7 +243,7 @@ const techStack = {
                     className={`px-2.5 py-1 rounded-lg transition-all flex items-center gap-1.5 ${
                       activeTab === 'stack'
                         ? 'bg-white dark:bg-[#1c1c28] text-red-600 dark:text-red-400 font-semibold shadow-xs'
-                        : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                        : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
                     }`}
                   >
                     <SiReact className="h-3 w-3 text-red-500" />

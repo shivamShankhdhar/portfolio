@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import SidebarLayout from '@/components/SidebarLayout';
 import HeroShowcaseSection from '@/components/sections/HeroShowcaseSection';
 import SelectedProjectsSection from '@/components/sections/SelectedProjectsSection';
+import ExperienceSection from '@/components/sections/ExperienceSection';
 import ExperienceProcessSection from '@/components/sections/ExperienceProcessSection';
 import WorkTogetherSection from '@/components/sections/WorkTogetherSection';
 import ContactDialog from '@/components/ContactDialog';
@@ -35,9 +36,19 @@ export default function Home() {
       'MERN Stack Architect',
       'Next.js & TypeScript Developer',
     ],
-    linkedinUrl: '',
-    githubUrl: '',
-    email: '',
+    linkedinUrl: 'https://www.linkedin.com/in/er-shivam-shankhdhar-930799141',
+    githubUrl: 'https://github.com/shivamShankhdhar',
+    email: 'er.shivam1214@gmail.com',
+    phone: '+91 8448967919',
+    location: 'Bareilly, Uttar Pradesh, India',
+    yearsExperience: '3+',
+    projectsCompleted: '20+',
+    happyClients: '100%',
+    portfolioUrl: 'https://www.shivamshankhdhar.online',
+    appsUrl: 'https://www.apps.shivamshankhdhar.online',
+    adminUrl: 'https://www.admin.shivamshankhdhar.online',
+    headlineQuote:
+      'Engineering is not merely writing code to make things work; it is designing resilient architectures that endure under load and craft experiences users love.',
   });
   const [adminEmail, setAdminEmail] = useState<string>('');
   const [loading, setLoading] = useState(true);
@@ -136,6 +147,10 @@ export default function Home() {
           projects={projects}
           loading={loading}
         />
+        <ExperienceSection
+          experience={experience}
+          loading={loading}
+        />
         <ExperienceProcessSection
           education={education}
           certifications={certifications}
@@ -155,6 +170,8 @@ export default function Home() {
       <ContactDialog
         isOpen={isContactDialogOpen}
         onClose={() => setIsContactDialogOpen(false)}
+        phone={profile?.phone}
+        email={profile?.email || adminEmail}
       />
     </div>
   );
